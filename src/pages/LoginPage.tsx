@@ -6,14 +6,8 @@ import { supabase } from '../lib/supabase.ts'
 import { Logo } from '../components/shared/Logo.tsx'
 import { Button } from '../components/shared/Button.tsx'
 import { Link, useNavigate } from 'react-router'
-import { X } from 'lucide-react'
 import { useState } from 'react'
-
-const InputStyles = {
-  basic: 'bg-sunken text-text rounded-md px-3 py-2 text-base',
-  error:
-    'bg-coral-200 border-2 border-toast-error-border text-text rounded-md px-3 py-2 text-base',
-}
+import { Input } from '../components/shared/Input.tsx'
 
 export function LoginPage() {
   const {
@@ -49,41 +43,22 @@ export function LoginPage() {
         onSubmit={handleSubmit(onSubmit)}
         className="flex w-full flex-col justify-center gap-3"
       >
-        <div className="flex w-full grow flex-col items-stretch gap-1.25">
-          <label htmlFor="email" className="text-text-h text-sm">
-            Email
-          </label>
-          <input
-            id="email"
-            autoComplete={'email'}
-            type="email"
-            className={errors.email ? InputStyles.error : InputStyles.basic}
-            {...register('email')}
-            aria-invalid={errors.email ? 'true' : 'false'}
-          />
-          <p className="text-toast-error mt-1 flex items-center gap-1 text-sm">
-            {errors.email && <X size={14} />}
-            {errors.email?.message}
-          </p>
-        </div>
-        <div className="flex w-full grow flex-col gap-1.25">
-          <label htmlFor="password" className="text-text-h text-sm">
-            Password
-          </label>
-          <input
-            id="password"
-            autoComplete={'password'}
-            type="password"
-            className={errors.password ? InputStyles.error : InputStyles.basic}
-            {...register('password')}
-            aria-invalid={errors.password ? 'true' : 'false'}
-          />
-
-          <p className="text-toast-error mt-1 flex items-center gap-1 text-sm">
-            {errors.password && <X size={14} />}
-            {errors.password?.message}
-          </p>
-        </div>
+        <Input
+          id={'email'}
+          type={'email'}
+          autoComplete={'email'}
+          label={'Email'}
+          error={errors.email}
+          {...register('email')}
+        />
+        <Input
+          id={'password'}
+          type={'password'}
+          autoComplete={'password'}
+          label={'Password'}
+          error={errors.password}
+          {...register('password')}
+        />
         <Button text="Login" disabled={isSubmitting} />
         {serverError && (
           <p className="text-toast-error mt-1 text-sm">{serverError}</p>
