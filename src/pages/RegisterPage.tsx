@@ -8,6 +8,7 @@ import { Button } from '../components/shared/Button.tsx'
 import { Link, useNavigate } from 'react-router'
 import { useState } from 'react'
 import { Input } from '../components/shared/Input.tsx'
+import { showToast } from '../lib/toast.tsx'
 
 export function RegisterPage() {
   const {
@@ -29,10 +30,12 @@ export function RegisterPage() {
       options: { data: { name: data.name } },
     })
     if (error) {
+      showToast.error('An error occurred while signing up')
       setServerError(error.message)
       console.error(error.message)
       return
     }
+    showToast.success('Signed up successfully.')
     navigate('/')
   }
 

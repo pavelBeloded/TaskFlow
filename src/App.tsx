@@ -8,6 +8,8 @@ import { RegisterPage } from './pages/RegisterPage.tsx'
 import { BoardPage } from './pages/BoardPage.tsx'
 import { ProtectedRoute } from './components/shared/ProtectedRoute.tsx'
 import { AuthLayout } from './components/auth/AuthLayout.tsx'
+import { Toaster } from 'sonner'
+import { ThemeProvider } from './providers/ThemeProvider.tsx'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,20 +23,23 @@ const queryClient = new QueryClient({
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route element={<AuthLayout />}>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-            </Route>
-            <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<BoardsPage />} />
-              <Route path="/board/:id" element={<BoardPage />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route element={<AuthLayout />}>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+              </Route>
+              <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<BoardsPage />} />
+                <Route path="/board/:id" element={<BoardPage />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </ThemeProvider>
+      <Toaster position="bottom-right" />
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )

@@ -8,6 +8,7 @@ import { Button } from '../components/shared/Button.tsx'
 import { Link, useNavigate } from 'react-router'
 import { useState } from 'react'
 import { Input } from '../components/shared/Input.tsx'
+import { showToast } from '../lib/toast.tsx'
 
 export function LoginPage() {
   const {
@@ -25,10 +26,12 @@ export function LoginPage() {
   async function onSubmit(data: LoginForm) {
     const { error } = await supabase.auth.signInWithPassword(data)
     if (error) {
+      showToast.error('An error occurred while signing in. Please try again')
       setServerError(error.message)
       console.error(error.message)
       return
     }
+    showToast.success('Login successfully')
     navigate('/')
   }
 

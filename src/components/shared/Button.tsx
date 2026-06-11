@@ -1,5 +1,5 @@
 interface ButtonProps {
-  disabled: boolean | null
+  disabled?: boolean | null
   className?: string
   text: string
   onClick?: () => void
