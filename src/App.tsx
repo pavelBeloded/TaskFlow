@@ -7,6 +7,7 @@ import { LoginPage } from './pages/LoginPage.tsx'
 import { RegisterPage } from './pages/RegisterPage.tsx'
 import { BoardPage } from './pages/BoardPage.tsx'
 import { ProtectedRoute } from './components/shared/ProtectedRoute.tsx'
+import { AuthLayout } from './components/auth/AuthLayout.tsx'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,11 +24,13 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+            <Route element={<AuthLayout />}>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+            </Route>
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<BoardsPage />} />
-              <Route path="/board:id" element={<BoardPage />} />
+              <Route path="/board/:id" element={<BoardPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

@@ -1,12 +1,15 @@
-import { useAuth } from '../../providers/AuthProvider.tsx'
-import { Outlet, useNavigate } from 'react-router'
+import { Navigate, Outlet } from 'react-router'
+import { useAuth } from '../../providers/AuthProvider'
 
 export function ProtectedRoute() {
-  const { user } = useAuth()
-  const navigate = useNavigate()
+  const { user, isLoading } = useAuth()
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
 
   if (!user) {
-    navigate('/login')
+    return <Navigate to="/login" replace />
   }
 
   return <Outlet />

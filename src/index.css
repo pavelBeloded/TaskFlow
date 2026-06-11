@@ -1,8 +1,7 @@
 @import 'tailwindcss';
 
 /* ────────────────────────────────────────────────────────────
-   1. @theme  —  (Tailwind utility classes)
-
+   1. @theme  —  design tokens + semantic aliases
    ──────────────────────────────────────────────────────────── */
 @theme {
   /* --- Brand color ramps ---------------------------------- */
@@ -11,14 +10,14 @@
   --color-purple-100: #cecbf6;
   --color-purple-200: #afa9ec;
   --color-purple-400: #7f77dd;
-  --color-purple-600: #534ab7; /* primary action */
+  --color-purple-600: #534ab7;
   --color-purple-800: #3c3489;
   --color-purple-900: #26215c;
 
   --color-teal-50: #e1f5ee;
   --color-teal-100: #9fe1cb;
   --color-teal-200: #5dcaa5;
-  --color-teal-400: #1d9e75; /* "Done" dot, low priority */
+  --color-teal-400: #1d9e75;
   --color-teal-600: #0f6e56;
   --color-teal-800: #085041;
   --color-teal-900: #04342c;
@@ -26,14 +25,14 @@
   --color-coral-50: #faece7;
   --color-coral-100: #f5c4b3;
   --color-coral-200: #f0997b;
-  --color-coral-400: #d85a30; /* high priority, destructive */
+  --color-coral-400: #d85a30;
   --color-coral-600: #993c1d;
   --color-coral-800: #712b13;
   --color-coral-900: #4a1b0c;
 
   --color-amber-50: #faeeda;
   --color-amber-100: #fac775;
-  --color-amber-200: #ef9f27; /* medium priority */
+  --color-amber-200: #ef9f27;
   --color-amber-400: #ba7517;
   --color-amber-600: #854f0b;
   --color-amber-800: #633806;
@@ -42,7 +41,7 @@
   --color-tf-gray-50: #f1efe8;
   --color-tf-gray-100: #d3d1c7;
   --color-tf-gray-200: #b4b2a9;
-  --color-tf-gray-400: #888780; /* "To do" column dot */
+  --color-tf-gray-400: #888780;
   --color-tf-gray-600: #5f5e5a;
   --color-tf-gray-800: #444441;
   --color-tf-gray-900: #2c2c2a;
@@ -55,28 +54,72 @@
   --color-blue-800: #0c447c;
   --color-blue-900: #042c53;
 
+  /* --- Semantic background colors ------------------------- */
+
+  --color-bg: var(--bg);
+  --color-surface: var(--bg-surface);
+  --color-sunken: var(--bg-sunken);
+
+  /* --- Semantic text colors ------------------------------- */
+
+  --color-text: var(--text);
+  --color-text-h: var(--text-h);
+  --color-text-muted: var(--text-muted);
+  --color-text-faint: var(--text-faint);
+
+  /* --- Semantic border colors ----------------------------- */
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  /* --- Accent colors -------------------------------------- */
+
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-accent-bg: var(--accent-bg);
+  --color-accent-border: var(--accent-border);
+
+  /* --- Priority colors ------------------------------------ */
+
+  --color-priority-high: var(--priority-high);
+  --color-priority-medium: var(--priority-medium);
+  --color-priority-low: var(--priority-low);
+
+  /* --- Column status colors ------------------------------- */
+
+  --color-col-todo: var(--col-todo);
+  --color-col-inprogress: var(--col-inprogress);
+  --color-col-done: var(--col-done);
+
+  /* --- Toast border colors -------------------------------- */
+
+  --color-toast-success: var(--toast-success-border);
+  --color-toast-error: var(--toast-error-border);
+  --color-toast-info: var(--toast-info-border);
+  --color-toast-warning: var(--toast-warning-border);
+
   /* --- Typography ----------------------------------------- */
 
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, Consolas, monospace;
 
-  --text-2xs: 10px; /* tiny labels            */
-  --text-xs: 12px; /* timestamps, meta       */
-  --text-sm: 13px; /* secondary UI           */
-  --text-base: 14px; /* default body           */
-  --text-md: 15px; /* slightly larger body   */
-  --text-lg: 16px; /* section headings       */
-  --text-xl: 18px; /* sub-headings           */
-  --text-2xl: 20px; /* modal titles           */
-  --text-3xl: 22px; /* page titles (h1)       */
+  --text-2xs: 10px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 20px;
+  --text-3xl: 22px;
 
   /* --- Border radius -------------------------------------- */
 
   --radius-sm: 4px;
   --radius: 6px;
-  --radius-md: 8px; /* inputs, badges, buttons */
-  --radius-lg: 12px; /* modals, columns         */
+  --radius-md: 8px;
+  --radius-lg: 12px;
   --radius-xl: 16px;
   --radius-2xl: 24px;
 
@@ -88,52 +131,55 @@
 
   /* --- Sizing shortcuts ----------------------------------- */
 
-  --height-13: 52px; /* topbar */
+  --height-13: 52px;
   --min-w-column: 260px;
   --max-w-column: 280px;
   --max-w-drawer: 480px;
 }
 
+/* ────────────────────────────────────────────────────────────
+   2. CSS custom properties  —  light theme (default)
+   ──────────────────────────────────────────────────────────── */
 :root {
   /* Фоны */
-  --bg: #fafaf9; /* страница */
-  --bg-surface: #ffffff; /* карточки, колонки, модалки */
-  --bg-sunken: #f1efe8; /* вдавленные зоны (sidebar, input bg) */
+  --bg: #fafaf9;
+  --bg-surface: #ffffff;
+  --bg-sunken: #f1efe8;
 
   /* Текст */
-  --text: #1c1c1a; /* основной */
-  --text-h: #0f0f0e; /* заголовки */
-  --text-muted: #6b6b66; /* вторичный */
-  --text-faint: #9a9a94; /* подсказки, placeholder */
+  --text: #1c1c1a;
+  --text-h: #0f0f0e;
+  --text-muted: #6b6b66;
+  --text-faint: #9a9a94;
 
   /* Границы */
-  --border: #e2e0d8; /* общие разделители */
-  --border-strong: #c8c6bc; /* акцентные границы */
+  --border: #e2e0d8;
+  --border-strong: #c8c6bc;
 
-  /* Акцент (фиолетовый) */
-  --accent: #534ab7; /* bg-accent → фиолетовая кнопка */
-  --accent-text: #ffffff; /* текст на акцентном фоне */
-  --accent-bg: #eeedfe; /* светлая акцентная заливка */
-  --accent-border: #afa9ec; /* граница акцентного элемента */
+  /* Акцент */
+  --accent: #534ab7;
+  --accent-text: #ffffff;
+  --accent-bg: #eeedfe;
+  --accent-border: #afa9ec;
 
-  /* Тень (для базового shadow) */
+  /* Тень */
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06);
 
   /* Код */
   --code-bg: #f1efe8;
 
-  /* Кнопки социалки / иконки */
+  /* Кнопки социалки */
   --social-bg: #f1efe8;
 
-  /* Приоритеты — левая полоска карточки */
-  --priority-high: #d85a30; /* coral-400 */
-  --priority-medium: #ef9f27; /* amber-200 */
-  --priority-low: #1d9e75; /* teal-400  */
+  /* Приоритеты */
+  --priority-high: #d85a30;
+  --priority-medium: #ef9f27;
+  --priority-low: #1d9e75;
 
-  /* Статусы колонок — точка в заголовке */
-  --col-todo: #888780; /* tf-gray-400 */
-  --col-inprogress: #534ab7; /* purple-600  */
-  --col-done: #1d9e75; /* teal-400    */
+  /* Статусы колонок */
+  --col-todo: #888780;
+  --col-inprogress: #534ab7;
+  --col-done: #1d9e75;
 
   /* Тосты */
   --toast-success-border: #1d9e75;
@@ -142,6 +188,9 @@
   --toast-warning-border: #ef9f27;
 }
 
+/* ────────────────────────────────────────────────────────────
+   3. Тёмная тема
+   ──────────────────────────────────────────────────────────── */
 .dark {
   --bg: #141413;
   --bg-surface: #1e1e1c;
@@ -155,7 +204,7 @@
   --border: #2e2e2b;
   --border-strong: #3e3e3a;
 
-  --accent: #7f77dd; /* светлее для тёмного фона */
+  --accent: #534ab7;
   --accent-text: #ffffff;
   --accent-bg: #26215c;
   --accent-border: #534ab7;
@@ -165,9 +214,9 @@
   --code-bg: #2a2a28;
   --social-bg: #2a2a28;
 
-  --priority-high: #f0997b; /* coral-200 — светлее для тёмного фона */
-  --priority-medium: #fac775; /* amber-100 */
-  --priority-low: #5dcaa5; /* teal-200  */
+  --priority-high: #f0997b;
+  --priority-medium: #fac775;
+  --priority-low: #5dcaa5;
 
   --col-todo: #b4b2a9;
   --col-inprogress: #afa9ec;
@@ -180,9 +229,7 @@
 }
 
 /* ────────────────────────────────────────────────────────────
-   4. @media  —  авто-тёмная тема
-      Срабатывает только если на <html> НЕТ класса dark/light.
-      Если управляешь темой вручную — этот блок не мешает.
+   4. Системная тёмная тема
    ──────────────────────────────────────────────────────────── */
 @media (prefers-color-scheme: dark) {
   :root:not(.light):not(.dark) {
@@ -198,7 +245,7 @@
     --border: #2e2e2b;
     --border-strong: #3e3e3a;
 
-    --accent: #7f77dd;
+    --accent: #534ab7;
     --accent-text: #ffffff;
     --accent-bg: #26215c;
     --accent-border: #534ab7;
@@ -224,12 +271,17 @@
 }
 
 /* ────────────────────────────────────────────────────────────
-   БАЗОВЫЕ СТИЛИ
+   5. Базовые стили
    ──────────────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+#root {
+  min-height: 100dvh;
+  background: var(--bg);
 }
 
 html {
