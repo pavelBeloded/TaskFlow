@@ -18,7 +18,7 @@ export function Button({
       type={type}
       disabled={disabled || undefined}
       className={[
-        'bg-accent text-accent-text rounded-md py-2.5 text-sm',
+        'bg-accent text-accent-text rounded-md py-2.5 text-sm font-medium',
         className,
       ].join(' ')}
       onClick={onClick}
