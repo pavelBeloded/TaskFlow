@@ -1,9 +1,30 @@
+import type { ReactNode } from 'react'
+
+type ButtonVariant = 'default' | 'ghost'
+type Size = 'small' | 'medium' | 'large'
+
 interface ButtonProps {
   disabled?: boolean | null
   className?: string
   text: string
+  size?: Size
+  variant?: ButtonVariant
   onClick?: () => void
   type?: 'submit' | 'button' | 'reset'
+  icon?: ReactNode
+}
+
+const buttonVariants = {
+  default:
+    'bg-accent text-accent-text rounded-md  text-sm font-medium flex gap-2 items-center justify-center pointer cursor-pointer',
+  ghost:
+    'bg-transparent text-accent-text text-accent-text rounded-md  text-sm font-medium gap-2 flex items-center hover:bg-sunken justify-center ',
+}
+
+const sizes = {
+  small: 'py-1',
+  medium: 'py-2.5',
+  large: '',
 }
 
 export function Button({
@@ -11,19 +32,20 @@ export function Button({
   className,
   text,
   onClick,
+  variant = 'default',
   type = 'submit',
+  size = 'medium',
+  icon,
 }: ButtonProps) {
   return (
     <button
       type={type}
       disabled={disabled || undefined}
-      className={[
-        'bg-accent text-accent-text rounded-md py-2.5 text-sm font-medium',
-        className,
-      ].join(' ')}
+      className={[buttonVariants[variant], sizes[size], className].join(' ')}
       onClick={onClick}
     >
       {text}
+      {icon && icon}
     </button>
   )
 }

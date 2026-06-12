@@ -10,6 +10,7 @@ import { ProtectedRoute } from './components/shared/ProtectedRoute.tsx'
 import { AuthLayout } from './components/auth/AuthLayout.tsx'
 import { Toaster } from 'sonner'
 import { ThemeProvider } from './providers/ThemeProvider.tsx'
+import { AppLayout } from './components/shared/AppLayout.tsx'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,8 +33,10 @@ function App() {
                 <Route path="/register" element={<RegisterPage />} />
               </Route>
               <Route element={<ProtectedRoute />}>
-                <Route path="/" element={<BoardsPage />} />
-                <Route path="/board/:id" element={<BoardPage />} />
+                <Route element={<AppLayout />}>
+                  <Route path="/" element={<BoardsPage />} />
+                  <Route path="/board/:id" element={<BoardPage />} />
+                </Route>
               </Route>
             </Routes>
           </BrowserRouter>
