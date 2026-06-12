@@ -11,7 +11,8 @@ import {
   Trigger,
 } from '@radix-ui/react-dropdown-menu'
 import { supabase } from '../../lib/supabase.ts'
-import { LogOut, User } from 'lucide-react'
+import { LogOut, Moon, Sun, User } from 'lucide-react'
+import { useTheme } from '../../providers/ThemeProvider.tsx'
 
 const itemClass =
   'flex items-center gap-2 rounded-md px-3 py-2 text-sm outline-none cursor-pointer data-highlighted:bg-sunken'
@@ -19,7 +20,7 @@ const itemClass =
 export function AppLayout() {
   const { user } = useAuth()
   const userName = user?.user_metadata?.name || user?.email || 'U'
-
+  const { theme, toggleTheme } = useTheme()
   return (
     <div>
       <header className="bg-surface border-border flex h-13 items-center justify-between border-b px-5 md:px-6">
@@ -46,6 +47,16 @@ export function AppLayout() {
                   <User size={14} />
                   Profile
                 </Link>
+              </Item>
+              <Item
+                className={itemClass}
+                onSelect={(e) => {
+                  e.preventDefault()
+                  toggleTheme()
+                }}
+              >
+                {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+                {theme === 'dark' ? 'Light mode' : 'Dark mode'}
               </Item>
 
               <Separator className="bg-border my-1 h-px" />
