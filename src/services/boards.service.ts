@@ -1,7 +1,9 @@
 import { supabase } from '../lib/supabase.ts'
 
 export async function getBoards(query: string | undefined) {
-  let supabaseQuery = supabase.from('boards').select('*')
+  let supabaseQuery = supabase
+    .from('boards')
+    .select('*, board_members(user_id, profiles (id, name, avatar_url))')
 
   if (query && query.trim() !== '') {
     supabaseQuery = supabaseQuery.ilike('title', `%${query}%`)
