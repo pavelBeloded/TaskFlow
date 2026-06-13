@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase.ts'
+import { createColumn } from './columns.service.ts'
 
 export async function getBoards(query: string | undefined) {
   let supabaseQuery = supabase
@@ -18,6 +19,21 @@ export async function getBoards(query: string | undefined) {
   return boards ?? []
 }
 
+export async function getBoard(id: string) {
+  const { data, error } = await supabase
+    .from('boards')
+    .select('*, columns (*, tasks (*) ) ')
+    .eq('id', id)
+    .order('position', { referencedTable: 'columns', ascending: true })
+    .order('position', { referencedTable: 'columns.tasks', ascending: true })
+    .single()
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
 export async function createBoard(title: string) {
   const {
     data: { user },
@@ -27,12 +43,7 @@ export async function createBoard(title: string) {
   if (!user || authError) {
     throw new Error('Not authorized')
   }
-  console.log('user id:', user.id)
-  console.log('inserting:', { title, owner_id: user.id })
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-  console.log('session:', session?.access_token ? 'exists' : 'null')
+
   const { data, error } = await supabase
     .from('boards')
     .insert([{ title: title, owner_id: user.id }])
@@ -47,23 +58,6 @@ export async function createBoard(title: string) {
     createColumn('In Progress', data[0].id, 1),
     createColumn('Done', data[0].id, 2),
   ])
-
-  return data[0]
-}
-
-export async function createColumn(
-  title: string,
-  boardId: string,
-  position: number
-) {
-  const { data, error } = await supabase
-    .from('columns')
-    .insert([{ title: title, board_id: boardId, position: position }])
-    .select()
-
-  if (error || data === null) {
-    throw new Error('Error by creating column')
-  }
 
   return data[0]
 }
