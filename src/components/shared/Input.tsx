@@ -10,7 +10,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 export function Input({ label, error, id, ...rest }: InputProps) {
   return (
     <div className="flex w-full flex-col gap-1.25">
-      <label htmlFor={id} className="text-text-h text-sm">
+      <label htmlFor={id} className="text-text-h text-sm font-medium">
         {label}
       </label>
       <input

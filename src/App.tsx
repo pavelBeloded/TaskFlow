@@ -1,5 +1,5 @@
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Route, Routes } from 'react-router'
 import { AuthProvider } from './providers/AuthProvider.tsx'
 import { BoardsPage } from './pages/BoardsPage.tsx'
@@ -11,15 +11,7 @@ import { AuthLayout } from './components/auth/AuthLayout.tsx'
 import { Toaster } from 'sonner'
 import { ThemeProvider } from './providers/ThemeProvider.tsx'
 import { AppLayout } from './components/shared/AppLayout.tsx'
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60,
-      retry: 1,
-    },
-  },
-})
+import { queryClient } from './lib/queryClient.ts'
 
 function App() {
   return (

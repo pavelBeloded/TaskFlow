@@ -1,0 +1,7 @@
+export function parseMonthDay(timestamp: string | null) {
+  if (timestamp === null) {
+    return 'Unknown'
+  }
+  const date = new Date(timestamp)
+  return date.toLocaleString('en-US', { month: 'short', day: 'numeric' })
+}
