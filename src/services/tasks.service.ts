@@ -1,13 +1,14 @@
 import { supabase } from '../lib/supabase.ts'
+import type { CreateTaskData, UpdateTaskData } from '../types/task.types.ts'
 
-export async function createTask(
-  title: string,
-  columnId: string,
-  position: number,
-  createdBy: string,
-  priority: 'low' | 'medium' | 'high' = 'medium',
-  description: string | null = null
-) {
+export async function createTask({
+  title,
+  columnId,
+  position,
+  createdBy,
+  priority = 'medium',
+  description = null,
+}: CreateTaskData) {
   const { data, error } = await supabase
     .from('tasks')
     .insert([
@@ -33,14 +34,6 @@ export async function createTask(
 export async function deleteTask(id: string) {
   const { error } = await supabase.from('tasks').delete().eq('id', id)
   if (error) throw error
-}
-
-type UpdateTaskData = {
-  title?: string
-  description?: string
-  column_id?: string
-  position?: number
-  priority?: 'low' | 'medium' | 'high'
 }
 
 export async function updateTask(id: string, updateData: UpdateTaskData) {

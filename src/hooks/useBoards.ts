@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   createBoard,
   deleteBoard,
+  getBoard,
   getBoards,
 } from '../services/boards.service.ts'
 import { showToast } from '../lib/toast.tsx'
@@ -11,6 +12,13 @@ export function useBoards(searchQuery?: string) {
     queryKey: ['boards', searchQuery],
     queryFn: () => getBoards(searchQuery),
     retry: 2,
+  })
+}
+
+export function useBoard(id: string) {
+  return useQuery({
+    queryKey: ['board', id],
+    queryFn: () => getBoard(id),
   })
 }
 
