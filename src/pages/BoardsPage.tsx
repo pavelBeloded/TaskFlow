@@ -64,6 +64,7 @@ export function BoardsPage() {
               title={board.title}
               createdAt={board.created_at}
               id={board.id}
+              profiles={board.board_members.map((member) => member.profiles)}
             />
           ))}
         </div>
