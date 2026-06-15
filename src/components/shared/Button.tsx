@@ -18,7 +18,7 @@ const buttonVariants = {
   default:
     'bg-accent text-accent-text rounded-md  text-sm font-medium flex gap-2 items-center justify-center pointer cursor-pointer',
   ghost:
-    'bg-transparent text-accent-text text-accent-text rounded-md  text-sm font-medium gap-2 flex items-center hover:bg-sunken justify-center ',
+    'bg-transparent text-text text-accent-text rounded-md  text-sm font-medium gap-2 flex items-center hover:bg-sunken justify-center ',
   outline:
     'bg-surface hover:bg-sunken transition duration-200 border border-border-strong text-text text-accent-text rounded-md  text-sm font-medium gap-2 flex items-center hover:bg-sunken justify-center ',
 }
@@ -51,8 +51,8 @@ export function Button({
       ].join(' ')}
       onClick={onClick}
     >
-      {text}
       {icon && icon}
+      {text}
     </button>
   )
 }

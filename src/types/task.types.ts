@@ -14,3 +14,5 @@ export type UpdateTaskData = {
   position?: number
   priority?: 'low' | 'medium' | 'high'
 }
+
+export type Priority = 'low' | 'medium' | 'high'
