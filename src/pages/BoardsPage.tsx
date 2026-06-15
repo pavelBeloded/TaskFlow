@@ -1,11 +1,10 @@
 import { Button } from '../components/shared/Button.tsx'
 import { useBoards, useCreateBoard } from '../hooks/useBoards.ts'
-import { Modal } from '../components/shared/Modal.tsx'
 import { useEffect, useState } from 'react'
-import { Input } from '../components/shared/Input.tsx'
 import { showToast } from '../lib/toast.tsx'
-import { Loading, Spinner } from '../components/shared/Loading.tsx'
+import { Loading } from '../components/shared/Loading.tsx'
 import { BoardCard } from '../components/board/BoardCard.tsx'
+import { InputModal } from '../components/shared/InputModal.tsx'
 
 export function BoardsPage() {
   const { data, isPending, error } = useBoards()
@@ -20,8 +19,8 @@ export function BoardsPage() {
     }
   }, [error])
 
-  function handleClick(boardName: string) {
-    createBoard.mutate(boardName, {
+  function handleClick() {
+    createBoard.mutate(inputValue, {
       onSuccess: () => setIsOpen(false),
     })
   }
@@ -70,34 +69,19 @@ export function BoardsPage() {
         </div>
       )}
 
-      <Modal
-        description="Create new board"
-        open={isOpen}
-        title="New board"
-        onOpenChange={setIsOpen}
-      >
-        <Input
-          label="Bord name"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.currentTarget.value)}
-        />
-        <div className="gap flex items-center justify-end gap-2.5">
-          <Button
-            text={'Close'}
-            variant={'outline'}
-            onClick={() => {
-              setIsOpen(false)
-            }}
-          />
-          <Button
-            text={createBoard.isPending ? 'Creating...' : 'Create board'}
-            disabled={createBoard.isPending}
-            onClick={() => handleClick(inputValue)}
-            variant={'default'}
-            icon={createBoard.isPending && <Spinner size={16} />}
-          />
-        </div>
-      </Modal>
+      <InputModal
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        value={inputValue}
+        setValue={setInputValue}
+        title={'New board'}
+        isPending={createBoard.isPending}
+        handleSubmit={handleClick}
+        description={'Create new board'}
+        label={'Bord name'}
+        actionName={'Create board'}
+        pendingName={'Creating...'}
+      />
     </div>
   )
 }
