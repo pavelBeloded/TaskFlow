@@ -123,12 +123,12 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
         </div>
       </header>
 
-      <main className="flex flex-col gap-2">
+      <main className="mt-2 flex flex-col gap-2">
         {tasks.length > 0 &&
           tasks.map((task) => (
             <TaskCard
               key={task.id}
-              id={id}
+              id={task.id}
               title={task.title}
               priority={task.priority}
               deadline={task.due_date}

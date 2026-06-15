@@ -44,7 +44,8 @@ export function BoardPage() {
 
   if (isError) {
     showToast.error('Error occurred during board loading')
-    return navigate('/')
+    navigate('/')
+    return
   }
 
   if (!data) {
@@ -61,7 +62,7 @@ export function BoardPage() {
   }
 
   return (
-    <div className="max-w-5xl p-6">
+    <div className="p-6">
       <header className={'mb-5 flex items-center justify-start gap-5'}>
         <Link to={'/'} className={'text-text flex items-center gap-1 text-lg'}>
           <ArrowLeft size={16} />
