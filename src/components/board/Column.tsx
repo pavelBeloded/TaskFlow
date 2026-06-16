@@ -14,6 +14,8 @@ import { showToast } from '../../lib/toast.tsx'
 import { useAuth } from '../../providers/AuthProvider.tsx'
 import { InputModal } from '../shared/InputModal.tsx'
 import { TaskCard } from '../task/TaskCard.tsx'
+import { CollisionPriority } from '@dnd-kit/abstract'
+import { useDroppable } from '@dnd-kit/react'
 
 interface ColumnProps {
   tasks: Task[]
@@ -39,6 +41,17 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
   const createTask = useCreateTask(boardId)
   const deleteColumn = useDeleteColumn()
   const updateColumn = useUpdateColumn()
+
+  const { ref, isDropTarget } = useDroppable({
+    id: id,
+    type: 'column',
+    accept: 'task',
+    collisionPriority: CollisionPriority.Low,
+    data: {
+      type: 'column',
+      columnId: id,
+    },
+  })
 
   const { user } = useAuth()
 
@@ -123,18 +136,24 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
         </div>
       </header>
 
-      <main className="mt-2 flex flex-col gap-2">
-        {tasks.length > 0 &&
-          tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              id={task.id}
-              title={task.title}
-              priority={task.priority}
-              deadline={task.due_date}
-              assigneeId={task.assignee_id}
-            />
-          ))}
+      <main
+        ref={ref}
+        className={`mt-2 flex min-h-5 flex-1 flex-col gap-2 rounded-md transition-colors ${
+          isDropTarget ? 'bg-sunken/50' : ''
+        }`}
+      >
+        {tasks.map((task, index) => (
+          <TaskCard
+            key={task.id}
+            id={task.id}
+            columnId={id}
+            index={index}
+            title={task.title}
+            priority={task.priority}
+            deadline={task.due_date}
+            assigneeId={task.assignee_id}
+          />
+        ))}
       </main>
 
       <footer className="mt-3 w-full">

@@ -1,4 +1,5 @@
 import { Calendar } from 'lucide-react'
+import { useSortable } from '@dnd-kit/react/sortable'
 
 interface TaskCardProps {
   title: string
@@ -6,12 +7,18 @@ interface TaskCardProps {
   deadline: string | null
   id: string
   assigneeId: string | null
+  index: number // ← индекс в массиве, НЕ task.position
+  columnId: string
 }
 
-const PRIORITY_CONFIG: Record<
-  string,
-  { label: string; container: string; dot: string; border: string }
-> = {
+type PriorityStyle = {
+  label: string
+  container: string
+  dot: string
+  border: string
+}
+
+const PRIORITY_CONFIG: Record<string, PriorityStyle> = {
   high: {
     label: 'High',
     container: 'bg-priority-high/10 text-priority-high',
@@ -20,7 +27,7 @@ const PRIORITY_CONFIG: Record<
   },
   medium: {
     label: 'Medium',
-    container: 'bg-priority-medium/10 text-priority-medium', // Предполагаемые ваши кастомные цвета
+    container: 'bg-priority-medium/10 text-priority-medium',
     dot: 'bg-priority-medium',
     border: 'border-l-priority-medium',
   },
@@ -32,39 +39,54 @@ const PRIORITY_CONFIG: Record<
   },
 }
 
+const FALLBACK: PriorityStyle = {
+  label: '—',
+  container: 'bg-sunken text-text-muted',
+  dot: 'bg-text-muted',
+  border: 'border-l-border',
+}
+
 export function TaskCard({
   title,
   priority,
   deadline,
   assigneeId,
+  id,
+  index,
+  columnId,
 }: TaskCardProps) {
-  const normalizedPriority = priority?.toLowerCase() || ''
-  const currentPriority = PRIORITY_CONFIG[normalizedPriority]
+  const config = PRIORITY_CONFIG[priority?.toLowerCase() ?? ''] ?? FALLBACK
 
-  const assignee = assigneeId
+  const { ref, isDragging } = useSortable({
+    id,
+    index,
+    type: 'task',
+    accept: 'task',
+    group: columnId, // ключевое: group = id колонки, его читает move()
+  })
 
   return (
     <div
-      className={`bg-surface border-border flex flex-col items-start gap-2 rounded-md border border-l-3 p-3 ${currentPriority.border}`}
+      ref={ref}
+      data-dragging={isDragging}
+      className={`bg-surface border-border flex flex-col items-start gap-2 rounded-md border border-l-3 p-3 ${config.border} ${isDragging ? 'opacity-40' : ''}`}
     >
       <p className="text-text-h text-md font-medium">{title}</p>
-      <div className="itemd-center flex justify-between">
+      <div className="flex w-full items-center justify-between">
         <div
-          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${currentPriority.container}`}
+          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${config.container}`}
         >
-          <span
-            className={`h-2 w-2 rounded-full ${currentPriority.dot}`}
-          ></span>
-          {currentPriority.label}
+          <span className={`h-2 w-2 rounded-full ${config.dot}`} />
+          {config.label}
         </div>
-        <p>
-          {deadline && <Calendar size={16} className="text-text-muted" />}
-          {deadline}
-        </p>
+        {deadline && (
+          <p className="text-text-muted flex items-center gap-1 text-xs">
+            <Calendar size={14} />
+            {deadline}
+          </p>
+        )}
       </div>
-      <div>
-        <p className="text-text text-sm">{assignee ? 'Soon' : 'No assignee'}</p>
-      </div>
+      <p className="text-text text-sm">{assigneeId ? 'Soon' : 'No assignee'}</p>
     </div>
   )
 }

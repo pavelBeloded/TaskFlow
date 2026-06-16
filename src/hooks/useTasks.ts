@@ -2,9 +2,14 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   createTask,
   deleteTask,
+  persistTaskMove,
   updateTask,
 } from '../services/tasks.service.ts'
-import type { CreateTaskData, UpdateTaskData } from '../types/task.types.ts'
+import type {
+  CreateTaskData,
+  ReorderColumn,
+  UpdateTaskData,
+} from '../types/task.types.ts'
 import { showToast } from '../lib/toast.tsx'
 
 export function useCreateTask(boardId: string) {
@@ -36,17 +41,30 @@ export function useDeleteTask(boardId: string) {
   })
 }
 
-export function useUpdateTask(boardId: string) {
+export function useUpdateTask(boardId: string, silent: boolean = false) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateTaskData }) =>
       updateTask(id, data),
     onSuccess: ({ title }) => {
       queryClient.invalidateQueries({ queryKey: ['board', boardId] })
-      showToast.success(`Task ${title} updated successfully.`)
+      if (!silent) {
+        showToast.success(`Task ${title} updated successfully.`)
+      }
     },
     onError: (error) => {
       showToast.error(error.message)
     },
+  })
+}
+
+export function useMoveTask(boardId: string) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ affected }: { affected: ReorderColumn[] }) =>
+      persistTaskMove(affected),
+    onError: () => showToast.error('Failed to move task'),
+    onSettled: () =>
+      queryClient.invalidateQueries({ queryKey: ['board', boardId] }),
   })
 }

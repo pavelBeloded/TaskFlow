@@ -16,3 +16,8 @@ export type UpdateTaskData = {
 }
 
 export type Priority = 'low' | 'medium' | 'high'
+
+export interface ReorderColumn {
+  columnId: string
+  orderedTaskIds: string[]
+}

@@ -1,5 +1,9 @@
 import { supabase } from '../lib/supabase.ts'
-import type { CreateTaskData, UpdateTaskData } from '../types/task.types.ts'
+import type {
+  CreateTaskData,
+  ReorderColumn,
+  UpdateTaskData,
+} from '../types/task.types.ts'
 
 export async function createTask({
   title,
@@ -49,4 +53,19 @@ export async function updateTask(id: string, updateData: UpdateTaskData) {
   }
 
   return data
+}
+
+export async function persistTaskMove(affected: ReorderColumn[]) {
+  const updates = affected.flatMap(({ columnId, orderedTaskIds }) =>
+    orderedTaskIds.map((taskId, index) =>
+      supabase
+        .from('tasks')
+        .update({ column_id: columnId, position: index })
+        .eq('id', taskId)
+    )
+  )
+
+  const results = await Promise.all(updates)
+  const failed = results.find((r) => r.error)
+  if (failed?.error) throw failed.error
 }
