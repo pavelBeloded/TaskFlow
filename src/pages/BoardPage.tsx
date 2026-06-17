@@ -14,6 +14,7 @@ import { Button } from '../components/shared/Button.tsx'
 import { InputModal } from '../components/shared/InputModal.tsx'
 import type { Task } from '../types'
 import type { ReorderColumn } from '../types/task.types.ts'
+import { TaskDrawer } from '../components/task/TaskDrawer.tsx'
 
 type TasksByColumn = Record<string, Task[]>
 
@@ -148,7 +149,7 @@ export function BoardPage() {
           ))}
           <Button
             onClick={() => setIsOpen(true)}
-            className="w-72 shrink-0"
+            className="text-text w-72 shrink-0"
             icon={<Plus size={16} />}
             variant="outline"
             text="Add column"
@@ -169,6 +170,8 @@ export function BoardPage() {
         pendingName="Creating..."
         handleSubmit={handleClick}
       />
+
+      <TaskDrawer boardId={id!} />
     </div>
   )
 }

@@ -69,3 +69,17 @@ export async function persistTaskMove(affected: ReorderColumn[]) {
   const failed = results.find((r) => r.error)
   if (failed?.error) throw failed.error
 }
+
+export async function getTask(id: string) {
+  const { data, error } = await supabase
+    .from('tasks')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (error || data === null) {
+    throw new Error('Error by getting task')
+  }
+
+  return data
+}

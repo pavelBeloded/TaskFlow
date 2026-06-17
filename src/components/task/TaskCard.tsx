@@ -1,5 +1,6 @@
 import { Calendar } from 'lucide-react'
 import { useSortable } from '@dnd-kit/react/sortable'
+import { useTaskDetail } from '../../hooks/useTaskDetail.ts'
 
 interface TaskCardProps {
   title: string
@@ -7,7 +8,7 @@ interface TaskCardProps {
   deadline: string | null
   id: string
   assigneeId: string | null
-  index: number // ← индекс в массиве, НЕ task.position
+  index: number
   columnId: string
 }
 
@@ -57,16 +58,21 @@ export function TaskCard({
 }: TaskCardProps) {
   const config = PRIORITY_CONFIG[priority?.toLowerCase() ?? ''] ?? FALLBACK
 
+  const { openTask } = useTaskDetail()
+
   const { ref, isDragging } = useSortable({
     id,
     index,
     type: 'task',
     accept: 'task',
-    group: columnId, // ключевое: group = id колонки, его читает move()
+    group: columnId,
   })
 
   return (
     <div
+      onClick={() => {
+        openTask(id)
+      }}
       ref={ref}
       data-dragging={isDragging}
       className={`bg-surface border-border flex flex-col items-start gap-2 rounded-md border border-l-3 p-3 ${config.border} ${isDragging ? 'opacity-40' : ''}`}

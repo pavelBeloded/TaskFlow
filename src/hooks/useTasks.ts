@@ -1,7 +1,8 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   createTask,
   deleteTask,
+  getTask,
   persistTaskMove,
   updateTask,
 } from '../services/tasks.service.ts'
@@ -66,5 +67,13 @@ export function useMoveTask(boardId: string) {
     onError: () => showToast.error('Failed to move task'),
     onSettled: () =>
       queryClient.invalidateQueries({ queryKey: ['board', boardId] }),
+  })
+}
+
+export function useGetTask(id: string | null | undefined) {
+  return useQuery({
+    queryKey: ['task', id],
+    queryFn: () => getTask(id!),
+    enabled: !!id,
   })
 }
