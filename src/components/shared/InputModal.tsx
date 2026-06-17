@@ -45,6 +45,7 @@ export function InputModal({
       <div className="gap flex items-center justify-end gap-2.5">
         <Button
           text={'Close'}
+          className="text-text"
           variant={'outline'}
           onClick={() => {
             setIsOpen(false)

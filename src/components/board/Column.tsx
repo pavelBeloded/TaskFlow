@@ -161,7 +161,7 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
           onClick={() => {
             setIsOpen(true)
           }}
-          className="w-full"
+          className="text-text w-full"
           icon={<Plus size={16} />}
           variant={'outline'}
           text={'Add task'}
@@ -220,6 +220,7 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
               setIsOpen(false)
             }}
             variant={'outline'}
+            className="text-text"
             text="Cancel"
           />
           <Button onClick={handleCreate} text="Add Task" />

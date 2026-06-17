@@ -20,7 +20,7 @@ const buttonVariants = {
   ghost:
     'bg-transparent text-text text-accent-text rounded-md  text-sm font-medium gap-2 flex items-center hover:bg-sunken justify-center ',
   outline:
-    'bg-surface hover:bg-sunken transition duration-200 border border-border-strong text-text text-accent-text rounded-md  text-sm font-medium gap-2 flex items-center hover:bg-sunken justify-center ',
+    'bg-surface hover:bg-sunken transition duration-200 border border-border-strong text-accent-text rounded-md  text-sm font-medium gap-2 flex items-center hover:bg-sunken justify-center ',
 }
 
 const sizes = {
