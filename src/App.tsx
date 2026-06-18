@@ -35,7 +35,10 @@ function App() {
         </AuthProvider>
       </ThemeProvider>
       <Toaster position="bottom-right" />
-      <ReactQueryDevtools initialIsOpen={false} />
+      <ReactQueryDevtools
+        buttonPosition={'bottom-left'}
+        initialIsOpen={false}
+      />
     </QueryClientProvider>
   )
 }

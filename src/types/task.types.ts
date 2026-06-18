@@ -13,6 +13,7 @@ export type UpdateTaskData = {
   column_id?: string
   position?: number
   priority?: 'low' | 'medium' | 'high'
+  due_date?: string | null
 }
 
 export type Priority = 'low' | 'medium' | 'high'

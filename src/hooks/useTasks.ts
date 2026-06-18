@@ -47,8 +47,9 @@ export function useUpdateTask(boardId: string, silent: boolean = false) {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateTaskData }) =>
       updateTask(id, data),
-    onSuccess: ({ title }) => {
+    onSuccess: ({ title, id }) => {
       queryClient.invalidateQueries({ queryKey: ['board', boardId] })
+      queryClient.invalidateQueries({ queryKey: ['task', id] })
       if (!silent) {
         showToast.success(`Task ${title} updated successfully.`)
       }

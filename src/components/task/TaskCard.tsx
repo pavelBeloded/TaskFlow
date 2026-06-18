@@ -72,6 +72,7 @@ export function TaskCard({
     <div
       onClick={() => {
         openTask(id)
+        ;(document.activeElement as HTMLElement)?.blur()
       }}
       ref={ref}
       data-dragging={isDragging}
@@ -86,7 +87,7 @@ export function TaskCard({
           {config.label}
         </div>
         {deadline && (
-          <p className="text-text-muted flex items-center gap-1 text-xs">
+          <p className="text-text-muted flex items-center gap-1 text-xs font-medium">
             <Calendar size={14} />
             {deadline}
           </p>

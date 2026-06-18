@@ -5,16 +5,20 @@ interface CustomSelectProps<T extends string> {
   value: T
   setValue: (value: T) => void
   fields: Record<T, string>
+  textSize?: 'sm' | 'md' | 'lg' | 'xl'
 }
 
 export function CustomSelect<T extends string>({
   value,
   setValue,
   fields,
+  textSize = 'md',
 }: CustomSelectProps<T>) {
   return (
     <Select.Root value={value} onValueChange={setValue}>
-      <Select.Trigger className="bg-sunken border-border text-md text-text flex w-full items-center justify-between rounded-lg p-2 font-medium">
+      <Select.Trigger
+        className={`bg-sunken border-border text-${textSize} text-text flex w-full items-center justify-between rounded-lg p-2 font-medium`}
+      >
         <Select.Value />
         <ChevronRight size={14} />
       </Select.Trigger>
@@ -22,7 +26,7 @@ export function CustomSelect<T extends string>({
         <Select.Content
           position="popper"
           side={'bottom'}
-          className="bg-sunken border-border text-md text-text w-(--radix-select-trigger-width) rounded-t-sm rounded-b-lg p-2 font-medium"
+          className={`bg-sunken border-border text-text w-(--radix-select-trigger-width) rounded-t-sm rounded-b-lg p-2 font-medium text-${textSize}`}
         >
           <Select.Viewport>
             {Object.entries(fields).map(([key, label], index, array) => (

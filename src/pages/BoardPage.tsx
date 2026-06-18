@@ -14,7 +14,7 @@ import { Button } from '../components/shared/Button.tsx'
 import { InputModal } from '../components/shared/InputModal.tsx'
 import type { Task } from '../types'
 import type { ReorderColumn } from '../types/task.types.ts'
-import { TaskDrawer } from '../components/task/TaskDrawer.tsx'
+import { TaskDrawer } from '../components/task/Drawer/TaskDrawer.tsx'
 
 type TasksByColumn = Record<string, Task[]>
 

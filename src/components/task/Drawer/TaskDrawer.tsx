@@ -1,0 +1,45 @@
+import { useTaskDetail } from '../../../hooks/useTaskDetail.ts'
+import { useGetTask } from '../../../hooks/useTasks.ts'
+import { showToast } from '../../../lib/toast.tsx'
+import { Drawer } from 'vaul'
+import { Loading } from '../../shared/Loading.tsx'
+import { TaskDrawerContent } from './TaskDrawerContent.tsx'
+
+export function TaskDrawer({ boardId }: { boardId: string }) {
+  const { taskId, closeTask } = useTaskDetail()
+  const { data: task, isError, isLoading } = useGetTask(taskId)
+
+  if (isError) {
+    showToast.error('Error getting task')
+  }
+
+  return (
+    <Drawer.Root
+      open={!!taskId}
+      direction={'bottom'}
+      onOpenChange={(open) => !open && closeTask()}
+    >
+      <Drawer.Portal>
+        <Drawer.Overlay className="fixed inset-0 bg-black/40" />
+        <Drawer.Content className="bg-surface fixed right-0 bottom-0 left-0 h-fit rounded-t-md p-4 outline-none">
+          <Drawer.Title className="hidden">
+            {task ? `${task.title} details` : 'Task details'}
+          </Drawer.Title>
+          <Drawer.Description className="hidden">
+            Task Details
+          </Drawer.Description>
+
+          {isLoading || !task ? (
+            <Loading />
+          ) : (
+            <TaskDrawerContent
+              task={task}
+              close={closeTask}
+              boardId={boardId}
+            />
+          )}
+        </Drawer.Content>
+      </Drawer.Portal>
+    </Drawer.Root>
+  )
+}
