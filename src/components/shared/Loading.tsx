@@ -17,7 +17,7 @@ export function Loading() {
     <div className="flex flex-col items-center justify-center py-12">
       {/* Теперь размер можно передавать (по умолчанию Lucide ставит 24) */}
       <Spinner size={32} />
-      <p className="text-text mt-3 text-sm font-medium">Загрузка данных...</p>
+      <p className="text-text mt-3 text-sm font-medium">Data loading...</p>
     </div>
   )
 }
