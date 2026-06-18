@@ -4,10 +4,12 @@ import { showToast } from '../../../lib/toast.tsx'
 import { Drawer } from 'vaul'
 import { Loading } from '../../shared/Loading.tsx'
 import { TaskDrawerContent } from './TaskDrawerContent.tsx'
+import { useIsMobile } from '../../../hooks/useIsMobile.tsx'
 
 export function TaskDrawer({ boardId }: { boardId: string }) {
   const { taskId, closeTask } = useTaskDetail()
   const { data: task, isError, isLoading } = useGetTask(taskId)
+  const isMobile = useIsMobile()
 
   if (isError) {
     showToast.error('Error getting task')
@@ -16,12 +18,21 @@ export function TaskDrawer({ boardId }: { boardId: string }) {
   return (
     <Drawer.Root
       open={!!taskId}
-      direction={'bottom'}
+      direction={isMobile ? 'bottom' : 'right'}
       onOpenChange={(open) => !open && closeTask()}
     >
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-black/40" />
-        <Drawer.Content className="bg-surface fixed right-0 bottom-0 left-0 h-fit rounded-t-md p-4 outline-none">
+        <Drawer.Content
+          className={`bg-surface fixed p-4 outline-none ${
+            isMobile
+              ? 'right-0 bottom-0 left-0 h-fit rounded-t-xl'
+              : 'top-0 right-0 bottom-0 w-full max-w-md'
+          } `}
+        >
+          {isMobile && (
+            <div className="bg-sunken m-auto h-1.5 w-16 rounded-full"></div>
+          )}
           <Drawer.Title className="hidden">
             {task ? `${task.title} details` : 'Task details'}
           </Drawer.Title>

@@ -30,7 +30,6 @@ export function TaskDrawerContent({
 
   return (
     <div>
-      <div className="bg-sunken m-auto h-1.5 w-16 rounded-full"></div>
       <TaskDrawerTitle
         isEditing={isEditing}
         title={task.title}
