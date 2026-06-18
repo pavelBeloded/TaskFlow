@@ -72,3 +72,14 @@ export async function deleteBoard(boardId: string) {
     throw error
   }
 }
+
+export async function getBoardMembersProfiles(boardId: string) {
+  const { data, error } = await supabase
+    .from('board_members')
+    .select('*, profiles (id, name, avatar_url)')
+    .eq('board_id', boardId)
+  if (error) {
+    throw error
+  }
+  return data
+}

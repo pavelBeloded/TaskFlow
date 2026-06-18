@@ -15,34 +15,30 @@ export function TaskDescription({
   description,
 }: TaskDescriptionProps) {
   return (
-    <>
+    <div className="py-4">
+      <h4 className="text-text-muted mb-2 text-sm font-medium tracking-wide uppercase">
+        Description
+      </h4>
       {isEditing ? (
-        <div className="py-4">
-          <h4 className="text-text-muted text-md font-medium">
-            Edit description
-          </h4>
-          <p className="mt-1">
-            <textarea
-              autoFocus={true}
-              className="border-border-strong bg-sunken w-full rounded-md border p-1"
-              value={editedTask.description}
-              onChange={(e) =>
-                setEditedTask((prev) => ({
-                  ...prev,
-                  description: e.target.value,
-                }))
-              }
-            />
-          </p>
-        </div>
+        <textarea
+          autoFocus
+          rows={4}
+          className="border-border bg-sunken text-text w-full rounded-md border p-3 text-sm"
+          value={editedTask.description ?? ''}
+          onChange={(e) =>
+            setEditedTask((prev) => ({
+              ...prev,
+              description: e.target.value,
+            }))
+          }
+        />
       ) : (
-        <div className="py-4">
-          <h4 className="text-text-muted text-md font-medium">Description</h4>
-          <p className="mt-1">
-            {!description ? 'There is nothing here' : description}
-          </p>
-        </div>
+        <p className="text-text text-sm leading-relaxed">
+          {description ?? (
+            <span className="text-text-faint italic">No description</span>
+          )}
+        </p>
       )}
-    </>
+    </div>
   )
 }

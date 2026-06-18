@@ -2,7 +2,6 @@ import { Drawer } from 'vaul'
 import { X } from 'lucide-react'
 import type { UpdateTaskData } from '../../../types/task.types.ts'
 import { type Dispatch, type SetStateAction } from 'react'
-import { Input } from '../../shared/Input.tsx'
 
 interface TaskDrawerTitleProps {
   isEditing: boolean
@@ -18,11 +17,11 @@ export function TaskDrawerTitle({
   editedTask,
 }: TaskDrawerTitleProps) {
   return (
-    <header className="flex items-center justify-between py-4">
+    <header className="flex items-start justify-between gap-3 py-4">
       {isEditing ? (
-        <Input
-          label="Edit title"
-          value={editedTask.title}
+        <input
+          className="bg-sunken text-text-h w-full rounded-md px-3 py-2 text-lg font-medium"
+          value={editedTask.title ?? ''}
           onChange={(e) =>
             setEditedTask((prev) => ({ ...prev, title: e.target.value }))
           }
@@ -30,8 +29,8 @@ export function TaskDrawerTitle({
       ) : (
         <p className="text-text-h text-lg font-medium">{title}</p>
       )}
-      <Drawer.Close>
-        <X size={20} className="text-text-muted font-medium" />
+      <Drawer.Close className="text-text-muted hover:text-text mt-1 shrink-0">
+        <X size={20} />
       </Drawer.Close>
     </header>
   )

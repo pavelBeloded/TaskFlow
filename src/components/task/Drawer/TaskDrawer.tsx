@@ -5,12 +5,13 @@ import { Drawer } from 'vaul'
 import { Loading } from '../../shared/Loading.tsx'
 import { TaskDrawerContent } from './TaskDrawerContent.tsx'
 import { useIsMobile } from '../../../hooks/useIsMobile.tsx'
+import { useBoardMembers } from '../../../hooks/useBoards.ts'
 
 export function TaskDrawer({ boardId }: { boardId: string }) {
   const { taskId, closeTask } = useTaskDetail()
   const { data: task, isError, isLoading } = useGetTask(taskId)
+  const { data: members } = useBoardMembers(boardId)
   const isMobile = useIsMobile()
-
   if (isError) {
     showToast.error('Error getting task')
   }
@@ -40,10 +41,11 @@ export function TaskDrawer({ boardId }: { boardId: string }) {
             Task Details
           </Drawer.Description>
 
-          {isLoading || !task ? (
+          {isLoading || !task || !members ? (
             <Loading />
           ) : (
             <TaskDrawerContent
+              members={members}
               task={task}
               close={closeTask}
               boardId={boardId}

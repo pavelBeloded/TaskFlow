@@ -3,6 +3,7 @@ import {
   createBoard,
   deleteBoard,
   getBoard,
+  getBoardMembersProfiles,
   getBoards,
 } from '../services/boards.service.ts'
 import { showToast } from '../lib/toast.tsx'
@@ -50,5 +51,12 @@ export function useDeleteBoard() {
     onError: (error) => {
       showToast.error(error.message)
     },
+  })
+}
+
+export function useBoardMembers(boardId: string) {
+  return useQuery({
+    queryKey: ['board_members', boardId],
+    queryFn: () => getBoardMembersProfiles(boardId),
   })
 }

@@ -10,6 +10,7 @@ export function useTaskEdit(task: Task, boardId: string) {
     description: task.description ?? '',
     priority: task.priority as Priority,
     due_date: task.due_date,
+    assignee_id: task.assignee_id,
   })
 
   const updateTask = useUpdateTask(boardId)

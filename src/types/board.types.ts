@@ -1,0 +1,11 @@
+export type BoardMembersWithProfile = {
+  board_id: string
+  id: string
+  role: string
+  user_id: string
+  profiles: {
+    id: string
+    name: string | null
+    avatar_url: string | null
+  }
+}

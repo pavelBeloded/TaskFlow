@@ -49,7 +49,7 @@ export function BoardCard({ title, createdAt, id, profiles }: BoardCardProps) {
         }}
         text="Open board"
         variant="outline"
-        className="w-full"
+        className="text-text w-full"
       />
     </div>
   )
