@@ -12,6 +12,7 @@ import { Toaster } from 'sonner'
 import { ThemeProvider } from './providers/ThemeProvider.tsx'
 import { AppLayout } from './components/shared/AppLayout.tsx'
 import { queryClient } from './lib/queryClient.ts'
+import { ProfilePage } from './pages/ProfilePage.tsx'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
                 <Route element={<AppLayout />}>
                   <Route path="/" element={<BoardsPage />} />
                   <Route path="/board/:id" element={<BoardPage />} />
+                  <Route path="/profile/:id" element={<ProfilePage />} />
                 </Route>
               </Route>
             </Routes>

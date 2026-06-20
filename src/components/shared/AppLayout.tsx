@@ -13,18 +13,21 @@ import {
 import { supabase } from '../../lib/supabase.ts'
 import { LogOut, Moon, Sun, User } from 'lucide-react'
 import { useTheme } from '../../providers/ThemeProvider.tsx'
+import { useProfile } from '../../hooks/useProfile.ts'
 
 const itemClass =
   'flex items-center gap-2 rounded-md px-3 py-2 text-sm outline-none cursor-pointer data-highlighted:bg-sunken'
 
 export function AppLayout() {
   const { user } = useAuth()
-  const userName = user?.user_metadata?.name || user?.email || 'U'
+  const { data } = useProfile(user!.id)
   const { theme, toggleTheme } = useTheme()
   return (
     <div>
       <header className="bg-surface border-border flex h-13 items-center justify-between border-b px-5 md:px-6">
-        <Logo />
+        <Link to={'/'}>
+          <Logo />
+        </Link>
 
         <Root>
           <Trigger asChild>
@@ -32,8 +35,8 @@ export function AppLayout() {
               className="flex items-center gap-2 text-sm font-medium"
               aria-label="Navigation menu"
             >
-              <Avatar name={userName} />
-              <span className="hidden md:block">{userName}</span>
+              <Avatar name={data?.name ?? 'U'} />
+              <span className="hidden md:block">{data?.name}</span>
             </button>
           </Trigger>
           <Portal>
