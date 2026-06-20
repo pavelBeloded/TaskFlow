@@ -87,7 +87,10 @@ export function TaskMeta({
 
       {assignee && (
         <div className="flex items-center gap-1.5">
-          <Avatar name={assignee.profiles?.name ?? 'U'} />
+          <Avatar
+            name={assignee.profiles?.name ?? 'U'}
+            src={assignee.profiles?.avatar_url}
+          />
           <span className="text-text-muted text-sm">
             {assignee.profiles?.name}
           </span>

@@ -35,7 +35,7 @@ export function AppLayout() {
               className="flex items-center gap-2 text-sm font-medium"
               aria-label="Navigation menu"
             >
-              <Avatar name={data?.name ?? 'U'} />
+              <Avatar name={data?.name ?? 'U'} src={data?.avatar_url} />
               <span className="hidden md:block">{data?.name}</span>
             </button>
           </Trigger>

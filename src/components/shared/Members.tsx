@@ -17,6 +17,7 @@ export function Members({
           className="ml-2 first:ml-0"
           key={profile.id}
           name={profile.name ?? 'Unknown'}
+          src={profile.avatar_url}
         />
       ))}
       {remaining > 0 && (

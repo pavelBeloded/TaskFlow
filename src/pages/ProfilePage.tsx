@@ -13,6 +13,7 @@ export function ProfilePage() {
   const { id } = useParams()
   const { data } = useProfile(id!)
   const { user } = useAuth()
+  const updateProfile = useUpdateProfile()
 
   const {
     register,
@@ -26,12 +27,10 @@ export function ProfilePage() {
   useEffect(() => {
     if (data?.name) reset({ name: data.name })
   }, [data, reset])
-  const updateProfile = useUpdateProfile()
 
   async function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file || !id) return
-
     try {
       const url = await uploadAvatar(id, file)
       updateProfile.mutate({ userId: id, data: { avatar_url: url } })
@@ -41,50 +40,53 @@ export function ProfilePage() {
   }
 
   const onSubmit = (formData: { name: string }) => {
-    updateProfile.mutate({
-      userId: id!,
-      data: { name: formData.name },
-    })
+    updateProfile.mutate({ userId: id!, data: { name: formData.name } })
   }
 
-  if (!data) {
-    return null
-  }
+  if (!data) return null
 
   return (
     <div className="h-full w-full p-5">
-      <div className="bg-surface border-border m-auto flex w-full max-w-xl flex-col items-start gap-4 rounded-lg border p-5">
-        <h1 className="text-text-h text-xl font-medium">Profile</h1>
+      <div className="m-auto flex w-full max-w-xl flex-col gap-4">
+        <div className="bg-surface border-border flex flex-col gap-5 rounded-lg border p-6">
+          <h1 className="text-text-h text-xl font-medium">Profile</h1>
 
-        <div className="flex items-center gap-3">
-          <label className="relative cursor-pointer">
-            <Avatar size="3xl" name={data.name ?? 'U'} src={data.avatar_url} />
-            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity hover:opacity-100">
-              <p className="text-xs text-white">Change</p>
+          <div className="flex items-center gap-4">
+            <label className="relative cursor-pointer">
+              <Avatar
+                size="3xl"
+                name={data.name ?? 'U'}
+                src={data.avatar_url}
+              />
+              <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity hover:opacity-100">
+                <p className="text-xs font-medium text-white">Change</p>
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleAvatarChange}
+              />
+            </label>
+            <div className="flex flex-col gap-0.5">
+              <p className="text-text-h text-lg font-medium">{data.name}</p>
+              <p className="text-text-muted text-sm">{user?.email}</p>
             </div>
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleAvatarChange}
-            />
-          </label>
-          <div className="text-text text-lg font-medium">
-            <p>{data.name}</p>
-            <p className="text-text-muted text-sm">{user?.email}</p>
           </div>
-        </div>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col items-stretch gap-3">
+
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-3"
+          >
             <Input
-              id={'name'}
-              type={'text'}
-              autoComplete={'name'}
-              label={'Name'}
+              id="name"
+              type="text"
+              autoComplete="name"
+              label="Full name"
               error={errors.name}
               {...register('name')}
             />
-            <div>
+            <div className="flex flex-col gap-1">
               <Input
                 label="Email"
                 value={user?.email ?? ''}
@@ -95,13 +97,15 @@ export function ProfilePage() {
                 Email address cannot be changed
               </p>
             </div>
-          </div>
-          <Button
-            disabled={isSubmitting}
-            className="mt-5"
-            text={'Save changes'}
-          />
-        </form>
+            <div>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                text={isSubmitting ? 'Saving...' : 'Save changes'}
+              />
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   )
