@@ -1,4 +1,3 @@
-import type { Task } from '../../types'
 import { MoreDropdwn } from '../shared/MoreDropdown.tsx'
 import { Item, Separator } from '@radix-ui/react-dropdown-menu'
 import { Pencil, Plus, Trash } from 'lucide-react'
@@ -11,9 +10,10 @@ import { CollisionPriority } from '@dnd-kit/abstract'
 import { useDroppable } from '@dnd-kit/react'
 import { CreateTaskModal } from '../shared/Modal/CreateTaskModal.tsx'
 import { SubmitModal } from '../shared/Modal/SubmitModal.tsx'
+import type { TaskWithComments } from '../../types/task.types.ts'
 
 interface ColumnProps {
-  tasks: Task[]
+  tasks: TaskWithComments[]
   title: string
   id: string
   boardId: string
@@ -120,6 +120,7 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
             priority={task.priority}
             deadline={task.due_date}
             assigneeId={task.assignee_id}
+            commentsCount={task.comments[0].count}
           />
         ))}
       </main>

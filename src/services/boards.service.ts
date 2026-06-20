@@ -22,7 +22,7 @@ export async function getBoards(query: string | undefined) {
 export async function getBoard(id: string) {
   const { data, error } = await supabase
     .from('boards')
-    .select('*, columns (*, tasks (*))')
+    .select('*, columns (*, tasks (*, comments(count)))')
     .eq('id', id)
     .order('position', { referencedTable: 'columns', ascending: true })
     .order('position', { referencedTable: 'columns.tasks', ascending: true })

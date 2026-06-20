@@ -14,6 +14,7 @@ interface TaskCardProps {
   columnId: string
   boardId: string
   assigneeId: string | null
+  commentsCount: number
 }
 export function TaskCard({
   title,
@@ -24,6 +25,7 @@ export function TaskCard({
   columnId,
   boardId,
   assigneeId,
+  commentsCount,
 }: TaskCardProps) {
   const config = getPriorityConfig(priority)
   const { openTask } = useTaskDetail()
@@ -74,7 +76,7 @@ export function TaskCard({
 
         <div className="text-text-muted text-md flex items-center gap-2">
           <MessageSquare size={16} />
-          <span>0</span>
+          <span>{commentsCount}</span>
         </div>
       </div>
     </div>

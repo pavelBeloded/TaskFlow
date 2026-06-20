@@ -1,3 +1,5 @@
+import type { Task } from './index.ts'
+
 export type CreateTaskData = {
   title: string
   columnId: string
@@ -23,3 +25,6 @@ export interface ReorderColumn {
   columnId: string
   orderedTaskIds: string[]
 }
+
+export type TaskWithComments = Task & { comments: { count: number }[] }
+export type TasksByColumn = Record<string, TaskWithComments[]>

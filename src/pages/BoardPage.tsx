@@ -12,11 +12,8 @@ import { Loading } from '../components/shared/Loading.tsx'
 import { Column } from '../components/board/Column.tsx'
 import { Button } from '../components/shared/Button.tsx'
 import { InputModal } from '../components/shared/Modal/InputModal.tsx'
-import type { Task } from '../types'
-import type { ReorderColumn } from '../types/task.types.ts'
+import type { ReorderColumn, TasksByColumn } from '../types/task.types.ts'
 import { TaskDrawer } from '../components/task/Drawer/TaskDrawer.tsx'
-
-type TasksByColumn = Record<string, Task[]>
 
 export function BoardPage() {
   const { id } = useParams()
