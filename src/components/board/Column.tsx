@@ -5,11 +5,12 @@ import { Pencil, Plus, Trash } from 'lucide-react'
 import { useDeleteColumn, useUpdateColumn } from '../../hooks/useColumns.ts'
 import { useState } from 'react'
 import { Button } from '../shared/Button.tsx'
-import { InputModal } from '../shared/InputModal.tsx'
+import { InputModal } from '../shared/Modal/InputModal.tsx'
 import { TaskCard } from '../task/TaskCard.tsx'
 import { CollisionPriority } from '@dnd-kit/abstract'
 import { useDroppable } from '@dnd-kit/react'
-import { CreateTaskModal } from '../task/CreateTaskModal.tsx'
+import { CreateTaskModal } from '../shared/Modal/CreateTaskModal.tsx'
+import { SubmitModal } from '../shared/Modal/SubmitModal.tsx'
 
 interface ColumnProps {
   tasks: Task[]
@@ -23,6 +24,8 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
 
   const [inputModalIsOpen, setInputModalIsOpen] = useState(false)
   const [inputModalValue, setInputModalValue] = useState('')
+
+  const [submitModalIsOpen, setSubmitModalIsOpen] = useState(false)
 
   const deleteColumn = useDeleteColumn()
   const updateColumn = useUpdateColumn()
@@ -39,7 +42,12 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
   })
 
   function handleDelete() {
-    deleteColumn.mutate({ id, boardId })
+    deleteColumn.mutate(
+      { id, boardId },
+      {
+        onSuccess: () => setSubmitModalIsOpen(false),
+      }
+    )
   }
 
   function handleUpdate() {
@@ -86,7 +94,7 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
 
             <Item
               className={`data-highlighted:bg-sunken text-priority-high flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm outline-none`}
-              onSelect={handleDelete}
+              onSelect={() => setSubmitModalIsOpen(true)}
             >
               <Trash size={14} />
               Delete
@@ -128,6 +136,15 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
         />
       </footer>
 
+      <SubmitModal
+        isOpen={submitModalIsOpen}
+        setIsOpen={setSubmitModalIsOpen}
+        variant="dangerous"
+        title={`Delete "${title}"?`}
+        description="This action cannot be undone. All tasks and columns will be permanently removed."
+        isPending={deleteColumn.isPending}
+        handleSubmit={handleDelete}
+      />
       <InputModal
         isOpen={inputModalIsOpen}
         setIsOpen={setInputModalIsOpen}

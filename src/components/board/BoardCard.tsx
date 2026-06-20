@@ -7,6 +7,8 @@ import type { Profile } from '../../types'
 import { MoreDropdwn } from '../shared/MoreDropdown.tsx'
 import { Item } from '@radix-ui/react-dropdown-menu'
 import { useDeleteBoard } from '../../hooks/useBoards.ts'
+import { SubmitModal } from '../shared/Modal/SubmitModal.tsx'
+import { useState } from 'react'
 
 interface BoardCardProps {
   title: string
@@ -18,9 +20,14 @@ interface BoardCardProps {
 export function BoardCard({ title, createdAt, id, profiles }: BoardCardProps) {
   const navigate = useNavigate()
   const deleteBoard = useDeleteBoard()
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
 
   function handleDelete() {
-    deleteBoard.mutate(id)
+    deleteBoard.mutate(id, {
+      onSuccess: () => {
+        setIsSubmitModalOpen(false)
+      },
+    })
   }
 
   return (
@@ -30,7 +37,7 @@ export function BoardCard({ title, createdAt, id, profiles }: BoardCardProps) {
         <MoreDropdwn size={16}>
           <Item
             className={`data-highlighted:bg-sunken text-priority-high flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm outline-none`}
-            onSelect={handleDelete}
+            onSelect={() => setIsSubmitModalOpen(true)}
           >
             <Trash size={14} />
             Delete
@@ -50,6 +57,16 @@ export function BoardCard({ title, createdAt, id, profiles }: BoardCardProps) {
         text="Open board"
         variant="outline"
         className="text-text w-full"
+      />
+
+      <SubmitModal
+        isOpen={isSubmitModalOpen}
+        setIsOpen={setIsSubmitModalOpen}
+        variant="dangerous"
+        title={`Delete "${title}"?`}
+        description="This action cannot be undone. All tasks and columns will be permanently removed."
+        isPending={deleteBoard.isPending}
+        handleSubmit={handleDelete}
       />
     </div>
   )
