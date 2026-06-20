@@ -4,7 +4,7 @@ import { ArrowLeft, Plus } from 'lucide-react'
 import { DragDropProvider } from '@dnd-kit/react'
 import { move } from '@dnd-kit/helpers'
 
-import { useBoard } from '../hooks/useBoards.ts'
+import { useBoard, useBoardMembers } from '../hooks/useBoards.ts'
 import { useCreateColumn } from '../hooks/useColumns.ts'
 import { useMoveTask } from '../hooks/useTasks.ts'
 import { showToast } from '../lib/toast.tsx'
@@ -23,6 +23,7 @@ export function BoardPage() {
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
   const [inputValue, setInputValue] = useState('')
+  const { data: members } = useBoardMembers(id!)
 
   const createColumn = useCreateColumn()
   const moveTask = useMoveTask(id!)
@@ -171,7 +172,7 @@ export function BoardPage() {
         handleSubmit={handleClick}
       />
 
-      <TaskDrawer boardId={id!} />
+      <TaskDrawer members={members ?? []} boardId={id!} />
     </div>
   )
 }

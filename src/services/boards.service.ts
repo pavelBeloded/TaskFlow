@@ -1,17 +1,5 @@
 import { supabase } from '../lib/supabase.ts'
 import { createColumn } from './columns.service.ts'
-import type { QueryData } from '@supabase/supabase-js'
-
-const getBoardQuery = (id: string) =>
-  supabase
-    .from('boards')
-    .select('*, columns (*, tasks (*))')
-    .eq('id', id)
-    .order('position', { referencedTable: 'columns', ascending: true })
-    .order('position', { referencedTable: 'columns.tasks', ascending: true })
-    .single()
-
-export type BoardWithColumns = QueryData<ReturnType<typeof getBoardQuery>>
 
 export async function getBoards(query: string | undefined) {
   let supabaseQuery = supabase
@@ -32,7 +20,13 @@ export async function getBoards(query: string | undefined) {
 }
 
 export async function getBoard(id: string) {
-  const { data, error } = await getBoardQuery(id)
+  const { data, error } = await supabase
+    .from('boards')
+    .select('*, columns (*, tasks (*))')
+    .eq('id', id)
+    .order('position', { referencedTable: 'columns', ascending: true })
+    .order('position', { referencedTable: 'columns.tasks', ascending: true })
+    .single()
   if (error) throw error
   return data
 }

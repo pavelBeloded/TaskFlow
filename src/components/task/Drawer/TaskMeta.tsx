@@ -5,6 +5,7 @@ import { Calendar } from 'lucide-react'
 import type { Dispatch, SetStateAction } from 'react'
 import type { BoardMembersWithProfile } from '../../../types/board.types.ts'
 import { Avatar } from '../../shared/Avatar.tsx'
+import { formatDate } from '../../../utils/date.ts'
 
 interface TaskMetaProps {
   isEditing: boolean
@@ -14,14 +15,6 @@ interface TaskMetaProps {
   due_date: string | null
   assigneeId: string | null
   members: BoardMembersWithProfile[]
-}
-
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
 }
 
 export function TaskMeta({

@@ -106,10 +106,12 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
             key={task.id}
             id={task.id}
             columnId={id}
+            boardId={boardId}
             index={index}
             title={task.title}
             priority={task.priority}
             deadline={task.due_date}
+            assigneeId={task.assignee_id}
           />
         ))}
       </main>
