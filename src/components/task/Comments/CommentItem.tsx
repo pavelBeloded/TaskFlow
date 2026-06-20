@@ -49,7 +49,7 @@ export function CommentItem({
             </button>
           )}
         </header>
-        <p className="text-text text-sm leading-relaxed break-words">
+        <p className="text-text wrap-break-words text-sm leading-relaxed">
           {content}
         </p>
       </div>

@@ -1,54 +1,36 @@
 import { Link, useNavigate, useParams } from 'react-router'
-import { useEffect, useRef, useState } from 'react'
-import { ArrowLeft, Plus } from 'lucide-react'
+import { useState } from 'react'
+import { ArrowLeft, Plus, UserPlus } from 'lucide-react'
 import { DragDropProvider } from '@dnd-kit/react'
-import { move } from '@dnd-kit/helpers'
 
-import { useBoard, useBoardMembers } from '../hooks/useBoards.ts'
+import { useBoard } from '../hooks/useBoards.ts'
 import { useCreateColumn } from '../hooks/useColumns.ts'
-import { useMoveTask } from '../hooks/useTasks.ts'
 import { showToast } from '../lib/toast.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { Column } from '../components/board/Column.tsx'
 import { Button } from '../components/shared/Button.tsx'
 import { InputModal } from '../components/shared/Modal/InputModal.tsx'
-import type { ReorderColumn, TasksByColumn } from '../types/task.types.ts'
 import { TaskDrawer } from '../components/task/Drawer/TaskDrawer.tsx'
+import { useBoardMembers, useInviteMember } from '../hooks/useMembers.ts'
+import { useBoardDnd } from '../hooks/useBoardDnd.ts'
+import { Members } from '../components/shared/Members.tsx'
+import { InviteModal } from '../components/shared/Modal/InviteModal.tsx'
 
 export function BoardPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
   const [inputValue, setInputValue] = useState('')
+
+  const [inviteInputValue, setInviteInputValue] = useState('')
+
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false)
+
   const { data: members } = useBoardMembers(id!)
-
   const createColumn = useCreateColumn()
-  const moveTask = useMoveTask(id!)
   const { data, isLoading, isError } = useBoard(id!)
-
-  const [tasksByColumn, setTasksByColumn] = useState<TasksByColumn>({})
-  const isDragging = useRef(false)
-  const snapshot = useRef<TasksByColumn>({})
-  const tasksRef = useRef<TasksByColumn>({})
-
-  useEffect(() => {
-    if (data && !isDragging.current) {
-      const next: TasksByColumn = {}
-      for (const col of data.columns) {
-        next[col.id] = [...col.tasks].sort((a, b) => a.position - b.position)
-      }
-      setTasksByColumn(next)
-      tasksRef.current = next
-    }
-  }, [data])
-
-  function setTasks(updater: (prev: TasksByColumn) => TasksByColumn) {
-    setTasksByColumn((prev) => {
-      const next = updater(prev)
-      tasksRef.current = next
-      return next
-    })
-  }
+  const { tasksByColumn, dragHandlers } = useBoardDnd(id!, data)
+  const inviteMember = useInviteMember(id!)
 
   function handleClick() {
     if (!id || !data) {
@@ -85,56 +67,31 @@ export function BoardPage() {
 
   return (
     <div className="p-6">
-      <header className="mb-5 flex items-center justify-start gap-5">
-        <Link to="/" className="text-text flex items-center gap-1 text-lg">
-          <ArrowLeft size={16} /> Back
-        </Link>
-        <h1 className="text-text-h text-xl">{data.title}</h1>
+      <header className="m-auto mb-5 flex w-full max-w-5xl items-center justify-between">
+        <div className="flex items-center gap-5">
+          <Link to="/" className="text-text flex items-center gap-1 text-lg">
+            <ArrowLeft size={16} /> Back
+          </Link>
+          <h1 className="text-text-h text-xl">{data.title}</h1>
+        </div>
+        <div className="flex items-center gap-5">
+          <Members
+            profiles={
+              members?.map((m) => m.profiles).filter((p) => p !== null) ?? []
+            }
+            show={4}
+          />
+          <Button
+            icon={<UserPlus size={16} />}
+            text={'Invite'}
+            onClick={() => {
+              setIsInviteModalOpen(true)
+            }}
+          />
+        </div>
       </header>
 
-      <DragDropProvider
-        onDragStart={() => {
-          isDragging.current = true
-          snapshot.current = structuredClone(tasksRef.current)
-        }}
-        onDragOver={(event) => {
-          if (event.operation.source?.type === 'column') return
-          setTasks((prev) => move(prev, event))
-        }}
-        onDragEnd={(event) => {
-          isDragging.current = false
-
-          if (event.canceled) {
-            setTasks(() => snapshot.current)
-            return
-          }
-
-          const before = snapshot.current
-          const after = tasksRef.current
-
-          const affected: ReorderColumn[] = []
-          const columnIds = new Set([
-            ...Object.keys(before),
-            ...Object.keys(after),
-          ])
-
-          for (const columnId of columnIds) {
-            const beforeIds = (before[columnId] ?? [])
-              .map((t) => t.id)
-              .join(',')
-            const afterIds = (after[columnId] ?? []).map((t) => t.id).join(',')
-            if (beforeIds !== afterIds) {
-              affected.push({
-                columnId,
-                orderedTaskIds: (after[columnId] ?? []).map((t) => t.id),
-              })
-            }
-          }
-
-          if (affected.length === 0) return
-          moveTask.mutate({ affected })
-        }}
-      >
+      <DragDropProvider {...dragHandlers}>
         <div className="flex w-full items-start gap-6 overflow-x-auto pb-4">
           {data.columns.map((column) => (
             <Column
@@ -154,6 +111,21 @@ export function BoardPage() {
           />
         </div>
       </DragDropProvider>
+
+      <InviteModal
+        members={members!}
+        isOpen={isInviteModalOpen}
+        setIsOpen={setIsInviteModalOpen}
+        value={inviteInputValue}
+        setValue={setInviteInputValue}
+        title={'Invite to board'}
+        isPending={inviteMember.isPending}
+        handleSubmit={inviteMember.mutate}
+        description={'Invite member to board'}
+        label={''}
+        actionName={'Invite'}
+        pendingName={'Inviting...'}
+      />
 
       <InputModal
         value={inputValue}

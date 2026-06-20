@@ -2,8 +2,8 @@ import { Calendar, MessageSquare } from 'lucide-react'
 import { useSortable } from '@dnd-kit/react/sortable'
 import { useTaskDetail } from '../../hooks/useTaskDetail.ts'
 import { getPriorityConfig } from '../../utils/priority.ts'
-import { useBoardMemberMap } from '../../hooks/useBoards.ts'
 import { Avatar } from '../shared/Avatar.tsx'
+import { useBoardMemberMap } from '../../hooks/useMembers.ts'
 
 interface TaskCardProps {
   title: string

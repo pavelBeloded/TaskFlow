@@ -3,7 +3,6 @@ import {
   createBoard,
   deleteBoard,
   getBoard,
-  getBoardMembersProfiles,
   getBoards,
 } from '../services/boards.service.ts'
 import { showToast } from '../lib/toast.tsx'
@@ -51,24 +50,5 @@ export function useDeleteBoard() {
     onError: (error) => {
       showToast.error(error.message)
     },
-  })
-}
-
-type BoardMembers = Awaited<ReturnType<typeof getBoardMembersProfiles>>
-
-export function useBoardMembers<TData = BoardMembers>(
-  boardId: string,
-  options?: { select?: (data: BoardMembers) => TData }
-) {
-  return useQuery({
-    queryKey: ['board_members', boardId],
-    queryFn: () => getBoardMembersProfiles(boardId),
-    select: options?.select,
-  })
-}
-
-export function useBoardMemberMap(boardId: string) {
-  return useBoardMembers(boardId, {
-    select: (members) => new Map(members.map((m) => [m.user_id, m.profiles])),
   })
 }

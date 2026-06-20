@@ -14,6 +14,7 @@ import { supabase } from '../../lib/supabase.ts'
 import { LogOut, Moon, Sun, User } from 'lucide-react'
 import { useTheme } from '../../providers/ThemeProvider.tsx'
 import { useProfile } from '../../hooks/useProfile.ts'
+import { useQueryClient } from '@tanstack/react-query'
 
 const itemClass =
   'flex items-center gap-2 rounded-md px-3 py-2 text-sm outline-none cursor-pointer data-highlighted:bg-sunken'
@@ -22,6 +23,7 @@ export function AppLayout() {
   const { user } = useAuth()
   const { data } = useProfile(user!.id)
   const { theme, toggleTheme } = useTheme()
+  const queryClient = useQueryClient()
   return (
     <div>
       <header className="bg-surface border-border flex h-13 items-center justify-between border-b px-5 md:px-6">
@@ -66,7 +68,10 @@ export function AppLayout() {
 
               <Item
                 className={`${itemClass} text-priority-high`}
-                onSelect={() => supabase.auth.signOut()}
+                onSelect={() => {
+                  queryClient.clear()
+                  supabase.auth.signOut()
+                }}
               >
                 <LogOut size={14} />
                 Sign out

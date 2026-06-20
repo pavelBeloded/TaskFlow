@@ -1,3 +1,5 @@
+import { getBoardMembersProfiles } from '../services/boards.service.ts'
+
 export type BoardMembersWithProfile = {
   board_id: string
   id: string
@@ -7,5 +9,8 @@ export type BoardMembersWithProfile = {
     id: string
     name: string | null
     avatar_url: string | null
+    email: string | null
   }
 }
+
+export type BoardMembers = Awaited<ReturnType<typeof getBoardMembersProfiles>>

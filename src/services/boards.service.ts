@@ -70,7 +70,7 @@ export async function deleteBoard(boardId: string) {
 export async function getBoardMembersProfiles(boardId: string) {
   const { data, error } = await supabase
     .from('board_members')
-    .select('*, profiles (id, name, avatar_url)')
+    .select('*, profiles (id, name, avatar_url, email)')
     .eq('board_id', boardId)
   if (error) {
     throw error
