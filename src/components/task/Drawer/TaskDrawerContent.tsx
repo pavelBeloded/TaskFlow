@@ -10,17 +10,20 @@ import { useDeleteTask } from '../../../hooks/useTasks.ts'
 import { TaskDrawerTitle } from './TaskDrawerTitle.tsx'
 import { SubmitModal } from '../../shared/Modal/SubmitModal.tsx'
 import type { BoardMembersWithProfile } from '../../../types/board.types.ts'
+import { TaskComments } from '../Comments/TaskComments.tsx'
 
 export function TaskDrawerContent({
   task,
   boardId,
   close,
   members,
+  isMobile,
 }: {
   task: Task
   boardId: string
   close: () => void
   members: BoardMembersWithProfile[]
+  isMobile: boolean
 }) {
   const config = getPriorityConfig(task.priority)
   const deleteTask = useDeleteTask(boardId)
@@ -46,7 +49,12 @@ export function TaskDrawerContent({
   }
 
   return (
-    <div className="flex max-h-[85vh] flex-col overflow-y-auto">
+    <div
+      className={[
+        `flex flex-col overflow-y-auto`,
+        isMobile ? 'max-h-[75dvh]' : 'max-h-full',
+      ].join(' ')}
+    >
       <TaskDrawerTitle
         isEditing={isEditing}
         title={task.title}
@@ -70,6 +78,8 @@ export function TaskDrawerContent({
         editedTask={editedTask}
         setEditedTask={setEditedTask}
       />
+      <Separator className="bg-border h-px" />
+      <TaskComments taskId={task.id} />
       <Separator className="bg-border h-px" />
       <TaskDrawerFooter
         isEditing={isEditing}

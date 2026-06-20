@@ -54,6 +54,7 @@ export function TaskDrawer({
               task={task}
               close={closeTask}
               boardId={boardId}
+              isMobile={isMobile}
             />
           )}
         </Drawer.Content>

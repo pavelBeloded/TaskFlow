@@ -15,7 +15,7 @@ export function TaskDescription({
   description,
 }: TaskDescriptionProps) {
   return (
-    <div className="py-4">
+    <div className="px-1 py-4">
       <h4 className="text-text-muted mb-2 text-sm font-medium tracking-wide uppercase">
         Description
       </h4>
