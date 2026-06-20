@@ -3,19 +3,13 @@ import { MoreDropdwn } from '../shared/MoreDropdown.tsx'
 import { Item, Separator } from '@radix-ui/react-dropdown-menu'
 import { Pencil, Plus, Trash } from 'lucide-react'
 import { useDeleteColumn, useUpdateColumn } from '../../hooks/useColumns.ts'
-import { Modal } from '../shared/Modal.tsx'
 import { useState } from 'react'
 import { Button } from '../shared/Button.tsx'
-import { Input } from '../shared/Input.tsx'
-import { CustomSelect } from '../shared/Select.tsx'
-import { useCreateTask } from '../../hooks/useTasks.ts'
-import type { Priority } from '../../types/task.types.ts'
-import { showToast } from '../../lib/toast.tsx'
-import { useAuth } from '../../providers/AuthProvider.tsx'
 import { InputModal } from '../shared/InputModal.tsx'
 import { TaskCard } from '../task/TaskCard.tsx'
 import { CollisionPriority } from '@dnd-kit/abstract'
 import { useDroppable } from '@dnd-kit/react'
+import { CreateTaskModal } from '../task/CreateTaskModal.tsx'
 
 interface ColumnProps {
   tasks: Task[]
@@ -24,21 +18,12 @@ interface ColumnProps {
   boardId: string
 }
 
-const priorityOptions = {
-  low: 'Low',
-  medium: 'Medium',
-  high: 'High',
-}
-
 export function Column({ title, tasks, id, boardId }: ColumnProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedPriority, setSelectedPriority] = useState<Priority>('medium')
-  const [inputValue, setInputValue] = useState('')
 
   const [inputModalIsOpen, setInputModalIsOpen] = useState(false)
   const [inputModalValue, setInputModalValue] = useState('')
 
-  const createTask = useCreateTask(boardId)
   const deleteColumn = useDeleteColumn()
   const updateColumn = useUpdateColumn()
 
@@ -53,33 +38,8 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
     },
   })
 
-  const { user } = useAuth()
-
   function handleDelete() {
     deleteColumn.mutate({ id, boardId })
-  }
-
-  function handleCreate() {
-    if (!user) {
-      showToast.error('User not authorized')
-      return
-    }
-    createTask.mutate(
-      {
-        title: inputValue,
-        columnId: id,
-        position: tasks.length,
-        priority: selectedPriority,
-        description: null,
-        createdBy: user.id,
-      },
-      {
-        onSuccess: () => {
-          setIsOpen(false)
-          setInputValue('')
-        },
-      }
-    )
   }
 
   function handleUpdate() {
@@ -93,7 +53,6 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
       }
     )
   }
-
   return (
     <div className="border-border bg-bg w-72 shrink-0 rounded-lg border p-4">
       <header className="flex items-center justify-between">
@@ -151,7 +110,6 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
             title={task.title}
             priority={task.priority}
             deadline={task.due_date}
-            assigneeId={task.assignee_id}
           />
         ))}
       </main>
@@ -181,51 +139,14 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
         actionName={'Rename'}
         pendingName={'Renaming...'}
       />
-
-      <Modal
-        open={isOpen}
-        onOpenChange={(open) => {
-          setIsOpen(open)
-          if (!open) setInputValue('')
-        }}
-        description="Add new task"
-        title="Add task"
-      >
-        <Input
-          value={inputValue}
-          onChange={(e) => {
-            setInputValue(e.currentTarget.value)
-          }}
-          label={'Task title'}
-        />
-        <div className="grid grid-cols-2 gap-12">
-          <div>
-            <p className="text-text mb-2 font-medium">Column</p>
-            <p className="bg-sunken border-border text-md text-text flex w-full items-center justify-between rounded-lg p-2 font-medium">
-              {title}
-            </p>
-          </div>
-          <div>
-            <p className="text-text mb-2 font-medium">Priority</p>
-            <CustomSelect
-              value={selectedPriority}
-              setValue={setSelectedPriority}
-              fields={priorityOptions}
-            />
-          </div>
-        </div>
-        <div className="flex items-center justify-end gap-2">
-          <Button
-            onClick={() => {
-              setIsOpen(false)
-            }}
-            variant={'outline'}
-            className="text-text"
-            text="Cancel"
-          />
-          <Button onClick={handleCreate} text="Add Task" />
-        </div>
-      </Modal>
+      <CreateTaskModal
+        columnId={id}
+        boardId={boardId}
+        isOpen={isOpen}
+        columnTitle={title}
+        tasksCount={tasks.length}
+        onOpenChange={setIsOpen}
+      />
     </div>
   )
 }
