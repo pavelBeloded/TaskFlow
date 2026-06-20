@@ -8,6 +8,7 @@ import type { BoardMembersWithProfile } from '../../../types/board.types.ts'
 import { Avatar } from '../Avatar.tsx'
 import { showToast } from '../../../lib/toast.tsx'
 import { z } from 'zod'
+import { X } from 'lucide-react'
 
 interface InviteModalProps {
   isOpen: boolean
@@ -32,6 +33,8 @@ interface InviteModalProps {
   actionName: string
   pendingName: string
   members: BoardMembersWithProfile[]
+  onDeleteMember: (userId: string) => void
+  isOwner: boolean
 }
 
 export function InviteModal({
@@ -47,6 +50,8 @@ export function InviteModal({
   actionName,
   pendingName,
   members,
+  isOwner,
+  onDeleteMember,
 }: InviteModalProps) {
   return (
     <Modal
@@ -89,8 +94,8 @@ export function InviteModal({
         </p>
         <div className="flex flex-col gap-2">
           {members.map((member) => (
-            <div key={member.id} className="flex justify-between">
-              <div className="flex items-center justify-start gap-3">
+            <div key={member.id} className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
                 <Avatar
                   size="lg"
                   name={member.profiles.name!}
@@ -105,8 +110,26 @@ export function InviteModal({
                   </p>
                 </div>
               </div>
-              <div className="bg-accent/20 text-accent flex h-6 w-17 items-center justify-center rounded-full">
-                {member.role}
+              <div className="flex items-center gap-2">
+                {member.role === 'owner' ? (
+                  <div className="bg-accent-bg text-accent flex h-6 items-center justify-center rounded-full px-3 text-xs">
+                    Owner
+                  </div>
+                ) : (
+                  <>
+                    <div className="bg-sunken text-text-muted flex h-6 items-center justify-center rounded-full px-3 text-xs">
+                      Member
+                    </div>
+                    {isOwner && (
+                      <button
+                        onClick={() => onDeleteMember(member.user_id)}
+                        className="text-text-muted hover:text-priority-high transition-colors"
+                      >
+                        <X size={16} />
+                      </button>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           ))}

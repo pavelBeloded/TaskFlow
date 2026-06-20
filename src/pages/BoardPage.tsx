@@ -11,10 +11,15 @@ import { Column } from '../components/board/Column.tsx'
 import { Button } from '../components/shared/Button.tsx'
 import { InputModal } from '../components/shared/Modal/InputModal.tsx'
 import { TaskDrawer } from '../components/task/Drawer/TaskDrawer.tsx'
-import { useBoardMembers, useInviteMember } from '../hooks/useMembers.ts'
+import {
+  useBoardMembers,
+  useDeleteMember,
+  useInviteMember,
+} from '../hooks/useMembers.ts'
 import { useBoardDnd } from '../hooks/useBoardDnd.ts'
 import { Members } from '../components/shared/Members.tsx'
 import { InviteModal } from '../components/shared/Modal/InviteModal.tsx'
+import { useAuth } from '../providers/AuthProvider.tsx'
 
 export function BoardPage() {
   const { id } = useParams()
@@ -25,12 +30,14 @@ export function BoardPage() {
   const [inviteInputValue, setInviteInputValue] = useState('')
 
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false)
-
+  const { user } = useAuth()
+  const deleteMember = useDeleteMember()
   const { data: members } = useBoardMembers(id!)
   const createColumn = useCreateColumn()
   const { data, isLoading, isError } = useBoard(id!)
   const { tasksByColumn, dragHandlers } = useBoardDnd(id!, data)
   const inviteMember = useInviteMember(id!)
+  const isOwner = members?.find((m) => m.user_id === user?.id)?.role === 'owner'
 
   function handleClick() {
     if (!id || !data) {
@@ -113,7 +120,7 @@ export function BoardPage() {
       </DragDropProvider>
 
       <InviteModal
-        members={members!}
+        members={members ?? []}
         isOpen={isInviteModalOpen}
         setIsOpen={setIsInviteModalOpen}
         value={inviteInputValue}
@@ -125,6 +132,10 @@ export function BoardPage() {
         label={''}
         actionName={'Invite'}
         pendingName={'Inviting...'}
+        isOwner={isOwner}
+        onDeleteMember={(userId) => {
+          deleteMember.mutate({ boardId: id!, userId })
+        }}
       />
 
       <InputModal

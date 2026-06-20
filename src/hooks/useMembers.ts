@@ -26,22 +26,14 @@ export function useInviteMember(boardId: string) {
   })
 }
 
-export function useAddMember() {
-  return useMutation({
-    mutationFn: ({ boardId, userId }: { boardId: string; userId: string }) =>
-      addBoardMember(boardId, userId),
-    onSuccess: () => {
-      showToast.success('User added successfully.')
-    },
-  })
-}
-
 export function useDeleteMember() {
+  const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({ boardId, userId }: { boardId: string; userId: string }) =>
       deleteBoardMember(boardId, userId),
-    onSuccess: () => {
+    onSuccess: (_, { boardId }) => {
       showToast.success('User deleted successfully.')
+      queryClient.invalidateQueries({ queryKey: ['board_members', boardId] })
     },
   })
 }
