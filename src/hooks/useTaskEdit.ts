@@ -5,25 +5,47 @@ import type { Task } from '../types'
 
 export function useTaskEdit(task: Task, boardId: string) {
   const [isEditing, setIsEditing] = useState(false)
-  const [editedTask, setEditedTask] = useState<UpdateTaskData>({
-    title: task.title,
-    description: task.description ?? '',
-    priority: task.priority as Priority,
-    due_date: task.due_date,
-    assignee_id: task.assignee_id,
-  })
+
+  function toEditData(t: Task): UpdateTaskData {
+    return {
+      title: t.title,
+      description: t.description ?? '',
+      priority: t.priority as Priority,
+      due_date: t.due_date,
+      assignee_id: t.assignee_id,
+    }
+  }
+
+  const [editedTask, setEditedTask] = useState<UpdateTaskData>(() =>
+    toEditData(task)
+  )
 
   const updateTask = useUpdateTask(boardId)
 
+  function startEdit() {
+    setEditedTask(toEditData(task))
+    setIsEditing(true)
+  }
+
+  function cancelEdit() {
+    setEditedTask(toEditData(task))
+    setIsEditing(false)
+  }
+
   function saveTask(data: UpdateTaskData) {
-    updateTask.mutate({ id: task.id, data: data })
+    updateTask.mutate(
+      { id: task.id, data: data },
+      { onSuccess: () => setIsEditing(false) }
+    )
   }
 
   return {
     isEditing,
-    setIsEditing,
+    isSaving: updateTask.isPending,
     editedTask,
     setEditedTask,
+    startEdit,
+    cancelEdit,
     saveTask,
   }
 }

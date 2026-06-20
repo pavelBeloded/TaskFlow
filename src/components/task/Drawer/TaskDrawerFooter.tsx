@@ -1,22 +1,24 @@
 import { Button } from '../../shared/Button.tsx'
-import type { UpdateTaskData } from '../../../types/task.types.ts'
+import { Spinner } from '../../shared/Loading.tsx'
 import { Pencil, Trash } from 'lucide-react'
 
-interface TaskDrawerFooter {
+interface TaskDrawerFooterProps {
   isEditing: boolean
-  setIsEditing: (isEditing: boolean) => void
+  isSaving: boolean
+  onEdit: () => void
+  onCancel: () => void
+  onSave: () => void
   onDelete: () => void
-  onSave: (editedTask: UpdateTaskData) => void
-  editedTask: UpdateTaskData
 }
 
 export function TaskDrawerFooter({
   isEditing,
-  setIsEditing,
-  editedTask,
+  isSaving,
+  onEdit,
+  onCancel,
   onSave,
   onDelete,
-}: TaskDrawerFooter) {
+}: TaskDrawerFooterProps) {
   return (
     <footer className="flex items-center justify-end gap-2 py-4">
       {isEditing ? (
@@ -25,17 +27,15 @@ export function TaskDrawerFooter({
             variant="outline"
             className="text-text"
             text="Cancel"
-            onClick={() => {
-              setIsEditing(false)
-            }}
+            disabled={isSaving}
+            onClick={onCancel}
           />
           <Button
-            text={'Save'}
+            text={isSaving ? 'Saving...' : 'Save'}
             variant="default"
-            onClick={() => {
-              onSave(editedTask)
-              setIsEditing(false)
-            }}
+            disabled={isSaving}
+            icon={isSaving && <Spinner size={16} />}
+            onClick={onSave}
           />
         </>
       ) : (
@@ -45,13 +45,11 @@ export function TaskDrawerFooter({
             variant="outline"
             className="text-text"
             text="Edit"
-            onClick={() => {
-              setIsEditing(true)
-            }}
+            onClick={onEdit}
           />
           <Button
             icon={<Trash size={16} />}
-            text={'Delete'}
+            text="Delete"
             variant="outline"
             className="text-priority-high"
             onClick={onDelete}

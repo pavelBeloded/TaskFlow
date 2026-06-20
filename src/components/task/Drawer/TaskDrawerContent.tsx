@@ -1,12 +1,14 @@
 import type { Task } from '../../../types'
 import { getPriorityConfig } from '../../../utils/priority.ts'
 import { Separator } from '@radix-ui/react-dropdown-menu'
+import { useState } from 'react'
 import { TaskMeta } from './TaskMeta.tsx'
 import { TaskDescription } from './TaskDescription.tsx'
 import { TaskDrawerFooter } from './TaskDrawerFooter.tsx'
 import { useTaskEdit } from '../../../hooks/useTaskEdit.ts'
 import { useDeleteTask } from '../../../hooks/useTasks.ts'
 import { TaskDrawerTitle } from './TaskDrawerTitle.tsx'
+import { SubmitModal } from '../../shared/Modal/SubmitModal.tsx'
 import type { BoardMembersWithProfile } from '../../../types/board.types.ts'
 
 export function TaskDrawerContent({
@@ -22,12 +24,25 @@ export function TaskDrawerContent({
 }) {
   const config = getPriorityConfig(task.priority)
   const deleteTask = useDeleteTask(boardId)
-  const { editedTask, isEditing, saveTask, setIsEditing, setEditedTask } =
-    useTaskEdit(task, boardId)
+  const {
+    editedTask,
+    isEditing,
+    isSaving,
+    startEdit,
+    cancelEdit,
+    saveTask,
+    setEditedTask,
+  } = useTaskEdit(task, boardId)
 
-  const handleDelete = () => {
-    deleteTask.mutate(task.id)
-    close()
+  const [confirmOpen, setConfirmOpen] = useState(false)
+
+  const confirmDelete = () => {
+    deleteTask.mutate(task.id, {
+      onSuccess: () => {
+        setConfirmOpen(false)
+        close()
+      },
+    })
   }
 
   return (
@@ -58,10 +73,21 @@ export function TaskDrawerContent({
       <Separator className="bg-border h-px" />
       <TaskDrawerFooter
         isEditing={isEditing}
-        setIsEditing={setIsEditing}
-        onDelete={handleDelete}
-        onSave={saveTask}
-        editedTask={editedTask}
+        isSaving={isSaving}
+        onEdit={startEdit}
+        onCancel={cancelEdit}
+        onSave={() => saveTask(editedTask)}
+        onDelete={() => setConfirmOpen(true)}
+      />
+
+      <SubmitModal
+        isOpen={confirmOpen}
+        setIsOpen={setConfirmOpen}
+        variant="dangerous"
+        title={`Delete "${task.title}"?`}
+        description="This action cannot be undone. The task will be permanently removed."
+        isPending={deleteTask.isPending}
+        handleSubmit={confirmDelete}
       />
     </div>
   )

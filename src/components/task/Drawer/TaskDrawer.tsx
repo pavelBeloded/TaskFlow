@@ -4,8 +4,9 @@ import { showToast } from '../../../lib/toast.tsx'
 import { Drawer } from 'vaul'
 import { Loading } from '../../shared/Loading.tsx'
 import { TaskDrawerContent } from './TaskDrawerContent.tsx'
-import { useIsMobile } from '../../../hooks/useIsMobile.tsx'
+import { useIsMobile } from '../../../hooks/useIsMobile.ts'
 import type { BoardMembersWithProfile } from '../../../types/board.types.ts'
+import { useEffect } from 'react'
 
 export function TaskDrawer({
   boardId,
@@ -17,10 +18,9 @@ export function TaskDrawer({
   const { taskId, closeTask } = useTaskDetail()
   const { data: task, isError, isLoading } = useGetTask(taskId)
   const isMobile = useIsMobile()
-  if (isError) {
-    showToast.error('Error getting task')
-  }
-
+  useEffect(() => {
+    if (isError) showToast.error('Error getting task')
+  }, [isError])
   return (
     <Drawer.Root
       open={!!taskId}
