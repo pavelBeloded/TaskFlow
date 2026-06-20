@@ -15,9 +15,16 @@ interface BoardCardProps {
   createdAt: string | null
   id: string
   profiles: Profile[]
+  isOwner: boolean
 }
 
-export function BoardCard({ title, createdAt, id, profiles }: BoardCardProps) {
+export function BoardCard({
+  title,
+  createdAt,
+  id,
+  profiles,
+  isOwner,
+}: BoardCardProps) {
   const navigate = useNavigate()
   const deleteBoard = useDeleteBoard()
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false)
@@ -34,15 +41,17 @@ export function BoardCard({ title, createdAt, id, profiles }: BoardCardProps) {
     <div className="bg-surface border-border-strong border-t-accent-border flex w-full max-w-md flex-col items-start gap-4 rounded-lg border-2 border-t-4 p-5">
       <header className="flex w-full items-center justify-between">
         <h3 className="text-text text-md">{title}</h3>
-        <MoreDropdwn size={16}>
-          <Item
-            className={`data-highlighted:bg-sunken text-priority-high flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm outline-none`}
-            onSelect={() => setIsSubmitModalOpen(true)}
-          >
-            <Trash size={14} />
-            Delete
-          </Item>
-        </MoreDropdwn>
+        {isOwner && (
+          <MoreDropdwn size={16}>
+            <Item
+              className={`data-highlighted:bg-sunken text-priority-high flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm outline-none`}
+              onSelect={() => setIsSubmitModalOpen(true)}
+            >
+              <Trash size={14} />
+              Delete
+            </Item>
+          </MoreDropdwn>
+        )}
       </header>
       <div className="flex w-full items-center justify-between">
         <Members profiles={profiles} show={3} />

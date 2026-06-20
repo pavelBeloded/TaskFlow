@@ -1,16 +1,10 @@
 import { supabase } from '../lib/supabase.ts'
 import { createColumn } from './columns.service.ts'
 
-export async function getBoards(query: string | undefined) {
-  let supabaseQuery = supabase
+export async function getBoards() {
+  const { data: boards, error } = await supabase
     .from('boards')
-    .select('*, board_members(user_id, profiles (id, name, avatar_url))')
-
-  if (query && query.trim() !== '') {
-    supabaseQuery = supabaseQuery.ilike('title', `%${query}%`)
-  }
-
-  const { data: boards, error } = await supabaseQuery
+    .select('*, board_members(user_id, profiles (id, name, avatar_url, email))')
 
   if (error) {
     throw error

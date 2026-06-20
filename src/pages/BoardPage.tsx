@@ -88,13 +88,15 @@ export function BoardPage() {
             }
             show={4}
           />
-          <Button
-            icon={<UserPlus size={16} />}
-            text={'Invite'}
-            onClick={() => {
-              setIsInviteModalOpen(true)
-            }}
-          />
+          {isOwner && (
+            <Button
+              icon={<UserPlus size={16} />}
+              text={'Invite'}
+              onClick={() => {
+                setIsInviteModalOpen(true)
+              }}
+            />
+          )}
         </div>
       </header>
 
@@ -107,6 +109,7 @@ export function BoardPage() {
               boardId={id!}
               title={column.title}
               tasks={tasksByColumn[column.id] ?? []}
+              isOwner={isOwner}
             />
           ))}
           <Button
@@ -152,7 +155,7 @@ export function BoardPage() {
         handleSubmit={handleClick}
       />
 
-      <TaskDrawer members={members ?? []} boardId={id!} />
+      <TaskDrawer members={members ?? []} boardId={id!} isOwner={isOwner} />
     </div>
   )
 }

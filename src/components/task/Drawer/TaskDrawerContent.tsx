@@ -18,12 +18,14 @@ export function TaskDrawerContent({
   close,
   members,
   isMobile,
+  isOwner,
 }: {
   task: Task
   boardId: string
   close: () => void
   members: BoardMembersWithProfile[]
   isMobile: boolean
+  isOwner: boolean
 }) {
   const config = getPriorityConfig(task.priority)
   const deleteTask = useDeleteTask(boardId)
@@ -82,6 +84,7 @@ export function TaskDrawerContent({
       <TaskComments taskId={task.id} />
       <Separator className="bg-border h-px" />
       <TaskDrawerFooter
+        isOwner={isOwner}
         isEditing={isEditing}
         isSaving={isSaving}
         onEdit={startEdit}

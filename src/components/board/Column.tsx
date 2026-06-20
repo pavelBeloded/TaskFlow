@@ -17,9 +17,10 @@ interface ColumnProps {
   title: string
   id: string
   boardId: string
+  isOwner: boolean
 }
 
-export function Column({ title, tasks, id, boardId }: ColumnProps) {
+export function Column({ title, tasks, id, boardId, isOwner }: ColumnProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const [inputModalIsOpen, setInputModalIsOpen] = useState(false)
@@ -80,26 +81,28 @@ export function Column({ title, tasks, id, boardId }: ColumnProps) {
               setIsOpen(true)
             }}
           />
-          <MoreDropdwn size={16}>
-            <Item
-              className={`data-highlighted:bg-sunken text-text flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm outline-none`}
-              onSelect={() => {
-                setInputModalIsOpen(true)
-              }}
-            >
-              <Pencil size={14} />
-              Rename
-            </Item>
-            <Separator className="bg-border my-1 h-px" />
+          {isOwner && (
+            <MoreDropdwn size={16}>
+              <Item
+                className={`data-highlighted:bg-sunken text-text flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm outline-none`}
+                onSelect={() => {
+                  setInputModalIsOpen(true)
+                }}
+              >
+                <Pencil size={14} />
+                Rename
+              </Item>
+              <Separator className="bg-border my-1 h-px" />
 
-            <Item
-              className={`data-highlighted:bg-sunken text-priority-high flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm outline-none`}
-              onSelect={() => setSubmitModalIsOpen(true)}
-            >
-              <Trash size={14} />
-              Delete
-            </Item>
-          </MoreDropdwn>
+              <Item
+                className={`data-highlighted:bg-sunken text-priority-high flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm outline-none`}
+                onSelect={() => setSubmitModalIsOpen(true)}
+              >
+                <Trash size={14} />
+                Delete
+              </Item>
+            </MoreDropdwn>
+          )}
         </div>
       </header>
 

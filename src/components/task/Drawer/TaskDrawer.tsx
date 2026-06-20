@@ -11,9 +11,11 @@ import { useEffect } from 'react'
 export function TaskDrawer({
   boardId,
   members,
+  isOwner,
 }: {
   boardId: string
   members: BoardMembersWithProfile[]
+  isOwner: boolean
 }) {
   const { taskId, closeTask } = useTaskDetail()
   const { data: task, isError, isLoading } = useGetTask(taskId)
@@ -51,6 +53,7 @@ export function TaskDrawer({
           ) : (
             <TaskDrawerContent
               members={members}
+              isOwner={isOwner}
               task={task}
               close={closeTask}
               boardId={boardId}

@@ -9,6 +9,7 @@ interface TaskDrawerFooterProps {
   onCancel: () => void
   onSave: () => void
   onDelete: () => void
+  isOwner: boolean
 }
 
 export function TaskDrawerFooter({
@@ -17,6 +18,7 @@ export function TaskDrawerFooter({
   onEdit,
   onCancel,
   onSave,
+  isOwner,
   onDelete,
 }: TaskDrawerFooterProps) {
   return (
@@ -47,13 +49,15 @@ export function TaskDrawerFooter({
             text="Edit"
             onClick={onEdit}
           />
-          <Button
-            icon={<Trash size={16} />}
-            text="Delete"
-            variant="outline"
-            className="text-priority-high"
-            onClick={onDelete}
-          />
+          {isOwner && (
+            <Button
+              icon={<Trash size={16} />}
+              text="Delete"
+              variant="outline"
+              className="text-priority-high"
+              onClick={onDelete}
+            />
+          )}
         </>
       )}
     </footer>

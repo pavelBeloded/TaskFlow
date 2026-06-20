@@ -7,10 +7,10 @@ import {
 } from '../services/boards.service.ts'
 import { showToast } from '../lib/toast.tsx'
 
-export function useBoards(searchQuery?: string) {
+export function useBoards() {
   return useQuery({
-    queryKey: ['boards', searchQuery],
-    queryFn: () => getBoards(searchQuery),
+    queryKey: ['boards'],
+    queryFn: () => getBoards(),
     retry: 2,
   })
 }

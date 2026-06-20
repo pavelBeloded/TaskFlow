@@ -5,6 +5,7 @@ import { showToast } from '../lib/toast.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { BoardCard } from '../components/board/BoardCard.tsx'
 import { InputModal } from '../components/shared/Modal/InputModal.tsx'
+import { useAuth } from '../providers/AuthProvider.tsx'
 
 export function BoardsPage() {
   const { data, isPending, error } = useBoards()
@@ -12,7 +13,7 @@ export function BoardsPage() {
 
   const [isOpen, setIsOpen] = useState(false)
   const [inputValue, setInputValue] = useState('')
-
+  const { user } = useAuth()
   useEffect(() => {
     if (error) {
       showToast.error(error.message)
@@ -64,6 +65,7 @@ export function BoardsPage() {
               createdAt={board.created_at}
               id={board.id}
               profiles={board.board_members.map((member) => member.profiles)}
+              isOwner={board.owner_id === user?.id}
             />
           ))}
         </div>
