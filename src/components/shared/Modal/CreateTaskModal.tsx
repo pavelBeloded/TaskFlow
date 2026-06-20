@@ -1,13 +1,14 @@
-import { Modal } from '../shared/Modal.tsx'
-import { Input } from '../shared/Input.tsx'
-import { CustomSelect } from '../shared/Select.tsx'
-import { priorityOptions } from '../../utils/priority.ts'
-import { Button } from '../shared/Button.tsx'
+import { Modal } from './Modal.tsx'
+import { Input } from '../Input.tsx'
+import { CustomSelect } from '../Select.tsx'
+import { priorityOptions } from '../../../utils/priority.ts'
+import { Button } from '../Button.tsx'
+import { Spinner } from '../Loading.tsx'
 import { useState } from 'react'
-import { showToast } from '../../lib/toast.tsx'
-import type { Priority } from '../../types/task.types.ts'
-import { useCreateTask } from '../../hooks/useTasks.ts'
-import { useAuth } from '../../providers/AuthProvider.tsx'
+import { showToast } from '../../../lib/toast.tsx'
+import type { Priority } from '../../../types/task.types.ts'
+import { useCreateTask } from '../../../hooks/useTasks.ts'
+import { useAuth } from '../../../providers/AuthProvider.tsx'
 
 interface CreateTaskModalProps {
   isOpen: boolean
@@ -49,6 +50,7 @@ export function CreateTaskModal({
         onSuccess: () => {
           onOpenChange(false)
           setInputValue('')
+          setSelectedPriority('medium')
         },
       }
     )
@@ -59,17 +61,25 @@ export function CreateTaskModal({
       open={isOpen}
       onOpenChange={(open) => {
         onOpenChange(open)
-        if (!open) setInputValue('')
+        if (!open) {
+          setInputValue('')
+          setSelectedPriority('medium')
+        }
       }}
       description="Add new task"
       title="Add task"
     >
       <Input
         value={inputValue}
+        autoFocus
         onChange={(e) => setInputValue(e.currentTarget.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !createTask.isPending && inputValue.trim())
+            handleCreate()
+        }}
         label="Task title"
       />
-      <div className="grid grid-cols-2 gap-12">
+      <div className="grid grid-cols-2 gap-4">
         <div>
           <p className="text-text mb-2 font-medium">Column</p>
           <p className="bg-sunken border-border text-md text-text flex w-full items-center justify-between rounded-lg p-2 font-medium">
@@ -92,7 +102,12 @@ export function CreateTaskModal({
           className="text-text"
           text="Cancel"
         />
-        <Button onClick={handleCreate} text="Add Task" />
+        <Button
+          onClick={handleCreate}
+          text={createTask.isPending ? 'Adding...' : 'Add Task'}
+          disabled={createTask.isPending || !inputValue.trim()}
+          icon={createTask.isPending && <Spinner size={16} />}
+        />
       </div>
     </Modal>
   )

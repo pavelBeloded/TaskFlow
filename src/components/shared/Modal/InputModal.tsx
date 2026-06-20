@@ -1,7 +1,7 @@
-import { Input } from './Input.tsx'
-import { Button } from './Button.tsx'
+import { Input } from '../Input.tsx'
+import { Button } from '../Button.tsx'
 import { Modal } from './Modal.tsx'
-import { Spinner } from './Loading.tsx'
+import { Spinner } from '../Loading.tsx'
 
 interface InputModalProps {
   isOpen: boolean
@@ -40,22 +40,24 @@ export function InputModal({
       <Input
         label={label}
         value={value}
+        autoFocus
         onChange={(e) => setValue(e.currentTarget.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !isPending && value.trim()) handleSubmit()
+        }}
       />
-      <div className="gap flex items-center justify-end gap-2.5">
+      <div className="flex items-center justify-end gap-2.5">
         <Button
-          text={'Close'}
+          text="Close"
           className="text-text"
-          variant={'outline'}
-          onClick={() => {
-            setIsOpen(false)
-          }}
+          variant="outline"
+          onClick={() => setIsOpen(false)}
         />
         <Button
           text={isPending ? pendingName : actionName}
-          disabled={isPending}
+          disabled={isPending || !value.trim()}
           onClick={handleSubmit}
-          variant={'default'}
+          variant="default"
           icon={isPending && <Spinner size={16} />}
         />
       </div>

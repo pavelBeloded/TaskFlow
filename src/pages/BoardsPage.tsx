@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { showToast } from '../lib/toast.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { BoardCard } from '../components/board/BoardCard.tsx'
-import { InputModal } from '../components/shared/InputModal.tsx'
+import { InputModal } from '../components/shared/Modal/InputModal.tsx'
 
 export function BoardsPage() {
   const { data, isPending, error } = useBoards()

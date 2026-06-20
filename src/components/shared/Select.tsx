@@ -1,5 +1,5 @@
 import * as Select from '@radix-ui/react-select'
-import { ChevronRight } from 'lucide-react'
+import { ChevronDown, Check } from 'lucide-react'
 
 interface CustomSelectProps<T extends string> {
   value: T
@@ -7,6 +7,13 @@ interface CustomSelectProps<T extends string> {
   fields: Record<T, string>
   textSize?: 'sm' | 'md' | 'lg' | 'xl'
 }
+
+const textSizeMap = {
+  sm: 'text-sm',
+  md: 'text-md',
+  lg: 'text-lg',
+  xl: 'text-xl',
+} as const
 
 export function CustomSelect<T extends string>({
   value,
@@ -17,27 +24,30 @@ export function CustomSelect<T extends string>({
   return (
     <Select.Root value={value} onValueChange={setValue}>
       <Select.Trigger
-        className={`bg-sunken border-border text-${textSize} text-text flex w-full items-center justify-between rounded-lg p-2 font-medium`}
+        className={`bg-sunken border-border text-text flex w-full items-center justify-between rounded-lg p-2 font-medium ${textSizeMap[textSize]}`}
       >
         <Select.Value />
-        <ChevronRight size={14} />
+        <ChevronDown size={14} className="text-text-muted" />
       </Select.Trigger>
       <Select.Portal>
         <Select.Content
           position="popper"
-          side={'bottom'}
-          className={`bg-sunken border-border text-text w-(--radix-select-trigger-width) rounded-t-sm rounded-b-lg p-2 font-medium text-${textSize}`}
+          side="bottom"
+          sideOffset={4}
+          className={`bg-surface border-border shadow-dropdown text-text w-(--radix-select-trigger-width) rounded-md border p-1 font-medium ${textSizeMap[textSize]}`}
         >
           <Select.Viewport>
-            {Object.entries(fields).map(([key, label], index, array) => (
-              <div key={key}>
-                <Select.Item className="" value={key}>
-                  <Select.ItemText>{label as string}</Select.ItemText>
-                </Select.Item>
-                {index < array.length - 1 && (
-                  <Select.Separator className="my-1 h-px bg-black/10" />
-                )}
-              </div>
+            {Object.entries(fields).map(([key, label]) => (
+              <Select.Item
+                key={key}
+                value={key}
+                className="data-highlighted:bg-sunken text-text flex cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2 outline-none"
+              >
+                <Select.ItemText>{label as string}</Select.ItemText>
+                <Select.ItemIndicator>
+                  <Check size={14} />
+                </Select.ItemIndicator>
+              </Select.Item>
             ))}
           </Select.Viewport>
         </Select.Content>
