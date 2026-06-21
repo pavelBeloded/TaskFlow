@@ -20,6 +20,7 @@ import { useBoardDnd } from '../hooks/useBoardDnd.ts'
 import { Members } from '../components/shared/Members.tsx'
 import { InviteModal } from '../components/shared/Modal/InviteModal.tsx'
 import { useAuth } from '../providers/AuthProvider.tsx'
+import { useRealtime } from '../hooks/useRealtime.tsx'
 
 export function BoardPage() {
   const { id } = useParams()
@@ -38,6 +39,8 @@ export function BoardPage() {
   const { tasksByColumn, dragHandlers } = useBoardDnd(id!, data)
   const inviteMember = useInviteMember(id!)
   const isOwner = members?.find((m) => m.user_id === user?.id)?.role === 'owner'
+
+  useRealtime(id!)
 
   function handleClick() {
     if (!id || !data) {
