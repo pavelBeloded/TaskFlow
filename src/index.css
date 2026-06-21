@@ -1,111 +1,319 @@
+@import 'tailwindcss';
+
+/* ────────────────────────────────────────────────────────────
+   1. @theme  —  design tokens + semantic aliases
+   ──────────────────────────────────────────────────────────── */
+@theme {
+  /* --- Brand color ramps ---------------------------------- */
+
+  --color-purple-50: #eeedfe;
+  --color-purple-100: #cecbf6;
+  --color-purple-200: #afa9ec;
+  --color-purple-400: #7f77dd;
+  --color-purple-600: #534ab7;
+  --color-purple-800: #3c3489;
+  --color-purple-900: #26215c;
+
+  --color-teal-50: #e1f5ee;
+  --color-teal-100: #9fe1cb;
+  --color-teal-200: #5dcaa5;
+  --color-teal-400: #1d9e75;
+  --color-teal-600: #0f6e56;
+  --color-teal-800: #085041;
+  --color-teal-900: #04342c;
+
+  --color-coral-50: #faece7;
+  --color-coral-100: #f5c4b3;
+  --color-coral-200: #f0997b;
+  --color-coral-400: #d85a30;
+  --color-coral-600: #993c1d;
+  --color-coral-800: #712b13;
+  --color-coral-900: #4a1b0c;
+
+  --color-amber-50: #faeeda;
+  --color-amber-100: #fac775;
+  --color-amber-200: #ef9f27;
+  --color-amber-400: #ba7517;
+  --color-amber-600: #854f0b;
+  --color-amber-800: #633806;
+  --color-amber-900: #412402;
+
+  --color-tf-gray-50: #f1efe8;
+  --color-tf-gray-100: #d3d1c7;
+  --color-tf-gray-200: #b4b2a9;
+  --color-tf-gray-400: #888780;
+  --color-tf-gray-600: #5f5e5a;
+  --color-tf-gray-800: #444441;
+  --color-tf-gray-900: #2c2c2a;
+
+  --color-blue-50: #e6f1fb;
+  --color-blue-100: #b5d4f4;
+  --color-blue-200: #85b7eb;
+  --color-blue-400: #378add;
+  --color-blue-600: #185fa5;
+  --color-blue-800: #0c447c;
+  --color-blue-900: #042c53;
+
+  /* --- Semantic background colors ------------------------- */
+
+  --color-bg: var(--bg);
+  --color-surface: var(--bg-surface);
+  --color-sunken: var(--bg-sunken);
+
+  /* --- Semantic text colors ------------------------------- */
+
+  --color-text: var(--text);
+  --color-text-h: var(--text-h);
+  --color-text-muted: var(--text-muted);
+  --color-text-faint: var(--text-faint);
+
+  /* --- Semantic border colors ----------------------------- */
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  /* --- Accent colors -------------------------------------- */
+
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-accent-bg: var(--accent-bg);
+  --color-accent-border: var(--accent-border);
+
+  /* --- Priority colors ------------------------------------ */
+
+  --color-priority-high: var(--priority-high);
+  --color-priority-medium: var(--priority-medium);
+  --color-priority-low: var(--priority-low);
+
+  /* --- Column status colors ------------------------------- */
+
+  --color-col-todo: var(--col-todo);
+  --color-col-inprogress: var(--col-inprogress);
+  --color-col-done: var(--col-done);
+
+  /* --- Toast border colors -------------------------------- */
+
+  --color-toast-success: var(--toast-success-border);
+  --color-toast-error: var(--toast-error-border);
+  --color-toast-info: var(--toast-info-border);
+  --color-toast-warning: var(--toast-warning-border);
+
+  /* --- Typography ----------------------------------------- */
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, Consolas, monospace;
+
+  --text-2xs: 10px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+  --text-2xl: 20px;
+  --text-3xl: 22px;
+
+  /* --- Border radius -------------------------------------- */
+
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+
+  /* --- Shadows -------------------------------------------- */
+
+  --shadow-modal: 0 20px 60px -10px rgb(0 0 0 / 0.18);
+  --shadow-dropdown: 0 8px 24px -4px rgb(0 0 0 / 0.12);
+  --shadow-toast: 0 4px 16px -2px rgb(0 0 0 / 0.12);
+
+  /* --- Sizing shortcuts ----------------------------------- */
+
+  --height-13: 52px;
+  --min-w-column: 260px;
+  --max-w-column: 280px;
+  --max-w-drawer: 480px;
+}
+
+/* ────────────────────────────────────────────────────────────
+   2. CSS custom properties  —  light theme (default)
+   ──────────────────────────────────────────────────────────── */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  /* Фоны */
+  --bg: #fafaf9;
+  --bg-surface: #ffffff;
+  --bg-sunken: #f1efe8;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  /* Текст */
+  --text: #1c1c1a;
+  --text-h: #0f0f0e;
+  --text-muted: #6b6b66;
+  --text-faint: #9a9a94;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Границы */
+  --border: #e2e0d8;
+  --border-strong: #c8c6bc;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
+  /* Акцент */
+  --accent: #534ab7;
+  --accent-text: #ffffff;
+  --accent-bg: #eeedfe;
+  --accent-border: #afa9ec;
+
+  /* Тень */
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06);
+
+  /* Код */
+  --code-bg: #f1efe8;
+
+  /* Кнопки социалки */
+  --social-bg: #f1efe8;
+
+  /* Приоритеты */
+  --priority-high: #d85a30;
+  --priority-medium: #ef9f27;
+  --priority-low: #1d9e75;
+
+  /* Статусы колонок */
+  --col-todo: #888780;
+  --col-inprogress: #534ab7;
+  --col-done: #1d9e75;
+
+  /* Тосты */
+  --toast-success-border: #1d9e75;
+  --toast-error-border: #d85a30;
+  --toast-info-border: #7f77dd;
+  --toast-warning-border: #ef9f27;
+}
+
+/* ────────────────────────────────────────────────────────────
+   3. Тёмная тема
+   ──────────────────────────────────────────────────────────── */
+.dark {
+  --bg: #141413;
+  --bg-surface: #1e1e1c;
+  --bg-sunken: #2a2a28;
+
+  --text: #eeecea;
+  --text-h: #f5f4f2;
+  --text-muted: #9a9a94;
+  --text-faint: #66665f;
+
+  --border: #2e2e2b;
+  --border-strong: #3e3e3a;
+
+  --accent: #534ab7;
+  --accent-text: #ffffff;
+  --accent-bg: #26215c;
+  --accent-border: #534ab7;
+
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3);
+
+  --code-bg: #2a2a28;
+  --social-bg: #2a2a28;
+
+  --priority-high: #f0997b;
+  --priority-medium: #fac775;
+  --priority-low: #5dcaa5;
+
+  --col-todo: #b4b2a9;
+  --col-inprogress: #afa9ec;
+  --col-done: #5dcaa5;
+
+  --toast-success-border: #5dcaa5;
+  --toast-error-border: #f0997b;
+  --toast-info-border: #afa9ec;
+  --toast-warning-border: #fac775;
+}
+
+/* ────────────────────────────────────────────────────────────
+   4. Системная тёмная тема
+   ──────────────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.dark) {
+    --bg: #141413;
+    --bg-surface: #1e1e1c;
+    --bg-sunken: #2a2a28;
+
+    --text: #eeecea;
+    --text-h: #f5f4f2;
+    --text-muted: #9a9a94;
+    --text-faint: #66665f;
+
+    --border: #2e2e2b;
+    --border-strong: #3e3e3a;
+
+    --accent: #534ab7;
+    --accent-text: #ffffff;
+    --accent-bg: #26215c;
+    --accent-border: #534ab7;
+
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3);
+
+    --code-bg: #2a2a28;
+    --social-bg: #2a2a28;
+
+    --priority-high: #f0997b;
+    --priority-medium: #fac775;
+    --priority-low: #5dcaa5;
+
+    --col-todo: #b4b2a9;
+    --col-inprogress: #afa9ec;
+    --col-done: #5dcaa5;
+
+    --toast-success-border: #5dcaa5;
+    --toast-error-border: #f0997b;
+    --toast-info-border: #afa9ec;
+    --toast-warning-border: #fac775;
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+/* ────────────────────────────────────────────────────────────
+   5. Базовые стили
+   ──────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  min-height: 100dvh;
+  background: var(--bg);
+}
+
+html {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
   margin: 0;
+  min-height: 100dvh;
 }
 
 h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
+  font-weight: 500;
   margin: 0;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+::placeholder {
+  color: var(--text-faint);
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+:focus-visible {
+  outline: 2px solid var(--color-purple-400);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
 }

@@ -1,0 +1,175 @@
+import { MoreDropdwn } from '../shared/MoreDropdown.tsx'
+import { Item, Separator } from '@radix-ui/react-dropdown-menu'
+import { Pencil, Plus, Trash } from 'lucide-react'
+import { useDeleteColumn, useUpdateColumn } from '../../hooks/useColumns.ts'
+import { useState } from 'react'
+import { Button } from '../shared/Button.tsx'
+import { InputModal } from '../shared/Modal/InputModal.tsx'
+import { TaskCard } from '../task/TaskCard.tsx'
+import { CollisionPriority } from '@dnd-kit/abstract'
+import { useDroppable } from '@dnd-kit/react'
+import { CreateTaskModal } from '../shared/Modal/CreateTaskModal.tsx'
+import { SubmitModal } from '../shared/Modal/SubmitModal.tsx'
+import type { TaskWithComments } from '../../types/task.types.ts'
+
+interface ColumnProps {
+  tasks: TaskWithComments[]
+  title: string
+  id: string
+  boardId: string
+  isOwner: boolean
+}
+
+export function Column({ title, tasks, id, boardId, isOwner }: ColumnProps) {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const [inputModalIsOpen, setInputModalIsOpen] = useState(false)
+  const [inputModalValue, setInputModalValue] = useState('')
+
+  const [submitModalIsOpen, setSubmitModalIsOpen] = useState(false)
+
+  const deleteColumn = useDeleteColumn()
+  const updateColumn = useUpdateColumn()
+
+  const { ref, isDropTarget } = useDroppable({
+    id: id,
+    type: 'column',
+    accept: 'task',
+    collisionPriority: CollisionPriority.Low,
+    data: {
+      type: 'column',
+      columnId: id,
+    },
+  })
+
+  function handleDelete() {
+    deleteColumn.mutate(
+      { id, boardId },
+      {
+        onSuccess: () => setSubmitModalIsOpen(false),
+      }
+    )
+  }
+
+  function handleUpdate() {
+    updateColumn.mutate(
+      { title: inputModalValue, id: id },
+      {
+        onSuccess: () => {
+          setInputModalIsOpen(false)
+          setInputModalValue('')
+        },
+      }
+    )
+  }
+  return (
+    <div className="border-border bg-bg w-72 shrink-0 rounded-lg border p-4">
+      <header className="flex items-center justify-between">
+        <div className="text-text text-md flex items-center gap-2 font-medium">
+          {title}{' '}
+          <span className="bg-sunken text-text-muted flex w-5 items-center justify-center rounded-full">
+            {tasks.length}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            text=""
+            icon={<Plus size={16} />}
+            variant="ghost"
+            onClick={() => {
+              setIsOpen(true)
+            }}
+          />
+          {isOwner && (
+            <MoreDropdwn size={16}>
+              <Item
+                className={`data-highlighted:bg-sunken text-text flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm outline-none`}
+                onSelect={() => {
+                  setInputModalIsOpen(true)
+                }}
+              >
+                <Pencil size={14} />
+                Rename
+              </Item>
+              <Separator className="bg-border my-1 h-px" />
+
+              <Item
+                className={`data-highlighted:bg-sunken text-priority-high flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm outline-none`}
+                onSelect={() => setSubmitModalIsOpen(true)}
+              >
+                <Trash size={14} />
+                Delete
+              </Item>
+            </MoreDropdwn>
+          )}
+        </div>
+      </header>
+
+      <main
+        ref={ref}
+        className={`mt-2 flex min-h-5 flex-1 flex-col gap-2 rounded-md transition-colors ${
+          isDropTarget ? 'bg-sunken/50' : ''
+        }`}
+      >
+        {tasks.map((task, index) => (
+          <TaskCard
+            key={task.id}
+            id={task.id}
+            columnId={id}
+            boardId={boardId}
+            index={index}
+            title={task.title}
+            priority={task.priority}
+            deadline={task.due_date}
+            assigneeId={task.assignee_id}
+            commentsCount={task.comments[0].count}
+          />
+        ))}
+      </main>
+
+      <footer className="mt-3 w-full">
+        <Button
+          onClick={() => {
+            setIsOpen(true)
+          }}
+          className="text-text w-full"
+          icon={<Plus size={16} />}
+          variant={'outline'}
+          text={'Add task'}
+        />
+      </footer>
+
+      <SubmitModal
+        isOpen={submitModalIsOpen}
+        setIsOpen={setSubmitModalIsOpen}
+        variant="dangerous"
+        title={`Delete "${title}"?`}
+        description="This action cannot be undone. All tasks and columns will be permanently removed."
+        isPending={deleteColumn.isPending}
+        handleSubmit={handleDelete}
+      />
+      <InputModal
+        isOpen={inputModalIsOpen}
+        setIsOpen={setInputModalIsOpen}
+        value={inputModalValue}
+        setValue={setInputModalValue}
+        title={'Rename column'}
+        isPending={updateColumn.isPending}
+        handleSubmit={handleUpdate}
+        description={'Rename column'}
+        label={'New name'}
+        actionName={'Rename'}
+        pendingName={'Renaming...'}
+      />
+      <CreateTaskModal
+        columnId={id}
+        boardId={boardId}
+        isOpen={isOpen}
+        columnTitle={title}
+        tasksCount={tasks.length}
+        onOpenChange={setIsOpen}
+      />
+    </div>
+  )
+}
