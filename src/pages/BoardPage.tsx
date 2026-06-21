@@ -104,24 +104,28 @@ export function BoardPage() {
       </header>
 
       <DragDropProvider {...dragHandlers}>
-        <div className="flex w-full items-start gap-6 overflow-x-auto pb-4">
-          {data.columns.map((column) => (
-            <Column
-              key={column.id}
-              id={column.id}
-              boardId={id!}
-              title={column.title}
-              tasks={tasksByColumn[column.id] ?? []}
-              isOwner={isOwner}
+        <div className="w-full overflow-x-auto pb-4">
+          <div className="flex w-max min-w-full items-start gap-6 px-6">
+            <div className="ml-auto" /> {/* распорка слева */}
+            {data.columns.map((column) => (
+              <Column
+                key={column.id}
+                id={column.id}
+                boardId={id!}
+                title={column.title}
+                tasks={tasksByColumn[column.id] ?? []}
+                isOwner={isOwner}
+              />
+            ))}
+            <Button
+              onClick={() => setIsOpen(true)}
+              className="text-text w-72 shrink-0"
+              icon={<Plus size={16} />}
+              variant="outline"
+              text="Add column"
             />
-          ))}
-          <Button
-            onClick={() => setIsOpen(true)}
-            className="text-text w-72 shrink-0"
-            icon={<Plus size={16} />}
-            variant="outline"
-            text="Add column"
-          />
+            <div className="mr-auto" /> {/* распорка справа */}
+          </div>
         </div>
       </DragDropProvider>
 

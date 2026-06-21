@@ -13,6 +13,7 @@ import { ThemeProvider } from './providers/ThemeProvider.tsx'
 import { AppLayout } from './components/shared/AppLayout.tsx'
 import { queryClient } from './lib/queryClient.ts'
 import { ProfilePage } from './pages/ProfilePage.tsx'
+import { useIsMobile } from './hooks/useIsMobile.ts'
 
 function App() {
   return (
@@ -36,13 +37,18 @@ function App() {
           </BrowserRouter>
         </AuthProvider>
       </ThemeProvider>
-      <Toaster position="bottom-right" />
+      <ToastProvider />
       <ReactQueryDevtools
         buttonPosition={'bottom-left'}
         initialIsOpen={false}
       />
     </QueryClientProvider>
   )
+}
+
+function ToastProvider() {
+  const isMobile = useIsMobile()
+  return <Toaster position={isMobile ? 'top-center' : 'bottom-right'} />
 }
 
 export default App
