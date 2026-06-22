@@ -16,6 +16,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+      setUser(session?.user ?? null)
+      setIsLoading(false)
+    })
+
     const { data } = supabase.auth.onAuthStateChange((_, session) => {
       setSession(session)
       setUser(session?.user ?? null)
