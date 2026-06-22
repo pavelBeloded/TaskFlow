@@ -1,5 +1,5 @@
 import { useProfile, useUpdateProfile } from '../hooks/useProfile.ts'
-import { useParams } from 'react-router'
+import { Navigate, useParams } from 'react-router'
 import { Avatar } from '../components/shared/Avatar.tsx'
 import { useAuth } from '../providers/AuthProvider.tsx'
 import { Input } from '../components/shared/Input.tsx'
@@ -11,7 +11,12 @@ import { showToast } from '../lib/toast.tsx'
 
 export function ProfilePage() {
   const { id } = useParams()
-  const { data } = useProfile(id!)
+  if (!id) return <Navigate to="/" replace />
+  return <ProfileView userId={id} />
+}
+
+function ProfileView({ userId }: { userId: string }) {
+  const { data } = useProfile(userId)
   const { user } = useAuth()
   const updateProfile = useUpdateProfile()
 
@@ -30,17 +35,17 @@ export function ProfilePage() {
 
   async function handleAvatarChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
-    if (!file || !id) return
+    if (!file) return
     try {
-      const url = await uploadAvatar(id, file)
-      updateProfile.mutate({ userId: id, data: { avatar_url: url } })
+      const url = await uploadAvatar(userId, file)
+      updateProfile.mutate({ userId, data: { avatar_url: url } })
     } catch {
       showToast.error('Failed to upload avatar')
     }
   }
 
   const onSubmit = (formData: { name: string }) => {
-    updateProfile.mutate({ userId: id!, data: { name: formData.name } })
+    updateProfile.mutate({ userId, data: { name: formData.name.trim() } })
   }
 
   if (!data) return null

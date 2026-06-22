@@ -14,3 +14,6 @@ export type BoardMembersWithProfile = {
 }
 
 export type BoardMembers = Awaited<ReturnType<typeof getBoardMembersProfiles>>
+
+export type MemberProfile = BoardMembers[number]['profiles']
+export type MemberMap = Map<string, MemberProfile>

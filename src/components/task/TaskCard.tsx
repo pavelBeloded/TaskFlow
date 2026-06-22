@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/react/sortable'
 import { useTaskDetail } from '../../hooks/useTaskDetail.ts'
 import { getPriorityConfig } from '../../utils/priority.ts'
 import { Avatar } from '../shared/Avatar.tsx'
-import { useBoardMemberMap } from '../../hooks/useMembers.ts'
+import type { MemberProfile } from '../../types/board.types.ts'
 
 interface TaskCardProps {
   title: string
@@ -12,8 +12,9 @@ interface TaskCardProps {
   id: string
   index: number
   columnId: string
-  boardId: string
-  assigneeId: string | null
+  // Исполнитель приходит уже разрешённым из Column,
+  // карточка больше не делает собственный запрос участников.
+  assignee: MemberProfile | null
   commentsCount: number
 }
 export function TaskCard({
@@ -23,14 +24,11 @@ export function TaskCard({
   id,
   index,
   columnId,
-  boardId,
-  assigneeId,
+  assignee,
   commentsCount,
 }: TaskCardProps) {
   const config = getPriorityConfig(priority)
   const { openTask } = useTaskDetail()
-  const { data: memberMap } = useBoardMemberMap(boardId)
-  const assignee = assigneeId ? memberMap?.get(assigneeId) : null
 
   const { ref, isDragging } = useSortable({
     id,

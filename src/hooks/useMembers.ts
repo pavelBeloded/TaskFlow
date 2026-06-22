@@ -35,6 +35,9 @@ export function useDeleteMember() {
       showToast.success('User deleted successfully.')
       queryClient.invalidateQueries({ queryKey: ['board_members', boardId] })
     },
+    onError: () => {
+      showToast.error('Failed to delete user.')
+    },
   })
 }
 
@@ -46,11 +49,5 @@ export function useBoardMembers<TData = BoardMembers>(
     queryKey: ['board_members', boardId],
     queryFn: () => getBoardMembersProfiles(boardId),
     select: options?.select,
-  })
-}
-
-export function useBoardMemberMap(boardId: string) {
-  return useBoardMembers(boardId, {
-    select: (members) => new Map(members.map((m) => [m.user_id, m.profiles])),
   })
 }
