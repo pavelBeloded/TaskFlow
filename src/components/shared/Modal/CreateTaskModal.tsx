@@ -37,9 +37,11 @@ export function CreateTaskModal({
       showToast.error('User not authorized')
       return
     }
+    const title = inputValue.trim()
+    if (!title) return
     createTask.mutate(
       {
-        title: inputValue,
+        title,
         columnId: columnId,
         position: tasksCount,
         priority: selectedPriority,
