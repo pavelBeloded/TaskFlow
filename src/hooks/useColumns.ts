@@ -58,5 +58,8 @@ export function useUpdateColumn() {
       queryClient.invalidateQueries({ queryKey: ['board', board_id] })
       showToast.success(`Column renamed to ${title} successfully.`)
     },
+    onError: (error) => {
+      showToast.error(error.message)
+    },
   })
 }

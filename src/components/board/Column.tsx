@@ -1,7 +1,7 @@
 import { MoreDropdwn } from '../shared/MoreDropdown.tsx'
 import { Item, Separator } from '@radix-ui/react-dropdown-menu'
 import { Pencil, Plus, Trash } from 'lucide-react'
-import { useDeleteColumn, useUpdateColumn } from '../../hooks/useColumns.ts'
+import { useColumnActions } from '../../hooks/useColumnActions.ts'
 import { useState } from 'react'
 import { Button } from '../shared/Button.tsx'
 import { InputModal } from '../shared/Modal/InputModal.tsx'
@@ -11,16 +11,25 @@ import { useDroppable } from '@dnd-kit/react'
 import { CreateTaskModal } from '../shared/Modal/CreateTaskModal.tsx'
 import { SubmitModal } from '../shared/Modal/SubmitModal.tsx'
 import type { TaskWithComments } from '../../types/task.types.ts'
+import type { MemberMap } from '../../types/board.types.ts'
 
 interface ColumnProps {
   tasks: TaskWithComments[]
   title: string
   id: string
   boardId: string
+  memberMap: MemberMap
   isOwner: boolean
 }
 
-export function Column({ title, tasks, id, boardId, isOwner }: ColumnProps) {
+export function Column({
+  title,
+  tasks,
+  id,
+  boardId,
+  memberMap,
+  isOwner,
+}: ColumnProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const [inputModalIsOpen, setInputModalIsOpen] = useState(false)
@@ -28,8 +37,10 @@ export function Column({ title, tasks, id, boardId, isOwner }: ColumnProps) {
 
   const [submitModalIsOpen, setSubmitModalIsOpen] = useState(false)
 
-  const deleteColumn = useDeleteColumn()
-  const updateColumn = useUpdateColumn()
+  const { rename, remove, isRenaming, isDeleting } = useColumnActions(
+    id,
+    boardId
+  )
 
   const { ref, isDropTarget } = useDroppable({
     id: id,
@@ -43,24 +54,14 @@ export function Column({ title, tasks, id, boardId, isOwner }: ColumnProps) {
   })
 
   function handleDelete() {
-    deleteColumn.mutate(
-      { id, boardId },
-      {
-        onSuccess: () => setSubmitModalIsOpen(false),
-      }
-    )
+    remove(() => setSubmitModalIsOpen(false))
   }
 
   function handleUpdate() {
-    updateColumn.mutate(
-      { title: inputModalValue, id: id },
-      {
-        onSuccess: () => {
-          setInputModalIsOpen(false)
-          setInputModalValue('')
-        },
-      }
-    )
+    rename(inputModalValue, () => {
+      setInputModalIsOpen(false)
+      setInputModalValue('')
+    })
   }
   return (
     <div className="border-border bg-bg w-72 shrink-0 rounded-lg border p-4">
@@ -117,12 +118,15 @@ export function Column({ title, tasks, id, boardId, isOwner }: ColumnProps) {
             key={task.id}
             id={task.id}
             columnId={id}
-            boardId={boardId}
             index={index}
             title={task.title}
             priority={task.priority}
             deadline={task.due_date}
-            assigneeId={task.assignee_id}
+            assignee={
+              task.assignee_id
+                ? (memberMap.get(task.assignee_id) ?? null)
+                : null
+            }
             commentsCount={task.comments[0].count}
           />
         ))}
@@ -146,7 +150,7 @@ export function Column({ title, tasks, id, boardId, isOwner }: ColumnProps) {
         variant="dangerous"
         title={`Delete "${title}"?`}
         description="This action cannot be undone. All tasks and columns will be permanently removed."
-        isPending={deleteColumn.isPending}
+        isPending={isDeleting}
         handleSubmit={handleDelete}
       />
       <InputModal
@@ -155,7 +159,7 @@ export function Column({ title, tasks, id, boardId, isOwner }: ColumnProps) {
         value={inputModalValue}
         setValue={setInputModalValue}
         title={'Rename column'}
-        isPending={updateColumn.isPending}
+        isPending={isRenaming}
         handleSubmit={handleUpdate}
         description={'Rename column'}
         label={'New name'}

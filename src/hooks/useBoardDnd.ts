@@ -54,9 +54,10 @@ export function useBoardDnd(boardId: string, data: BoardData | undefined) {
       }
       const affected = diffAffectedColumns(snapshot.current, tasksRef.current)
       if (affected.length === 0) return
-      moveTask.mutate({ affected })
+      const rollback = snapshot.current
+      moveTask.mutate({ affected }, { onError: () => setTasks(() => rollback) })
     },
   }
 
-  return { tasksByColumn, dragHandlers }
+  return { tasksByColumn, dragHandlers, isMoving: moveTask.isPending }
 }

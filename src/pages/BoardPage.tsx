@@ -1,10 +1,9 @@
-import { Link, useNavigate, useParams } from 'react-router'
-import { useState } from 'react'
+import { Link, Navigate, useNavigate, useParams } from 'react-router'
+import { useEffect, useMemo, useState } from 'react'
 import { ArrowLeft, Plus, UserPlus } from 'lucide-react'
 import { DragDropProvider } from '@dnd-kit/react'
 
 import { useBoard } from '../hooks/useBoards.ts'
-import { useCreateColumn } from '../hooks/useColumns.ts'
 import { showToast } from '../lib/toast.tsx'
 import { Loading } from '../components/shared/Loading.tsx'
 import { Column } from '../components/board/Column.tsx'
@@ -17,6 +16,7 @@ import {
   useInviteMember,
 } from '../hooks/useMembers.ts'
 import { useBoardDnd } from '../hooks/useBoardDnd.ts'
+import { useBoardActions } from '../hooks/useBoardActions.ts'
 import { Members } from '../components/shared/Members.tsx'
 import { InviteModal } from '../components/shared/Modal/InviteModal.tsx'
 import { useAuth } from '../providers/AuthProvider.tsx'
@@ -24,46 +24,51 @@ import { useRealtime } from '../hooks/useRealtime.tsx'
 
 export function BoardPage() {
   const { id } = useParams()
+  if (!id) return <Navigate to="/" replace />
+  return <BoardView boardId={id} />
+}
+
+function BoardView({ boardId }: { boardId: string }) {
   const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
   const [inputValue, setInputValue] = useState('')
 
   const [inviteInputValue, setInviteInputValue] = useState('')
-
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false)
+
   const { user } = useAuth()
   const deleteMember = useDeleteMember()
-  const { data: members } = useBoardMembers(id!)
-  const createColumn = useCreateColumn()
-  const { data, isLoading, isError } = useBoard(id!)
-  const { tasksByColumn, dragHandlers } = useBoardDnd(id!, data)
-  const inviteMember = useInviteMember(id!)
+  const { data: members } = useBoardMembers(boardId)
+  const { data, isLoading, isError } = useBoard(boardId)
+  const { tasksByColumn, dragHandlers, isMoving } = useBoardDnd(boardId, data)
+  const inviteMember = useInviteMember(boardId)
+  const { addColumn, isAddingColumn } = useBoardActions(boardId)
   const isOwner = members?.find((m) => m.user_id === user?.id)?.role === 'owner'
 
-  useRealtime(id!)
+  const memberMap = useMemo(
+    () => new Map((members ?? []).map((m) => [m.user_id, m.profiles])),
+    [members]
+  )
 
-  function handleClick() {
-    if (!id || !data) {
-      showToast.error('Error creating column')
-      return
+  useRealtime(boardId)
+
+  useEffect(() => {
+    if (isError) {
+      showToast.error('Error occurred during board loading')
+      navigate('/')
     }
-    createColumn.mutate(
-      { title: inputValue, boardId: id, position: data.columns.length },
-      {
-        onSuccess: () => {
-          setIsOpen(false)
-          setInputValue('')
-        },
-      }
-    )
+  }, [isError, navigate])
+
+  function handleCreateColumn() {
+    if (!data) return
+    addColumn(inputValue, data.columns.length, () => {
+      setIsOpen(false)
+      setInputValue('')
+    })
   }
 
   if (isLoading) return <Loading />
-  if (isError) {
-    showToast.error('Error occurred during board loading')
-    navigate('/')
-    return null
-  }
+  if (isError) return null
   if (!data) {
     return (
       <div className="p-4 md:p-6">
@@ -104,16 +109,21 @@ export function BoardPage() {
       </header>
 
       <DragDropProvider {...dragHandlers}>
-        <div className="w-full overflow-x-auto pb-4">
+        <div
+          className={`w-full overflow-x-auto pb-4 ${
+            isMoving ? 'pointer-events-none opacity-70' : ''
+          }`}
+        >
           <div className="flex w-max min-w-full items-start gap-6 px-6">
             <div className="ml-auto" /> {/* распорка слева */}
             {data.columns.map((column) => (
               <Column
                 key={column.id}
                 id={column.id}
-                boardId={id!}
+                boardId={boardId}
                 title={column.title}
                 tasks={tasksByColumn[column.id] ?? []}
+                memberMap={memberMap}
                 isOwner={isOwner}
               />
             ))}
@@ -144,7 +154,7 @@ export function BoardPage() {
         pendingName={'Inviting...'}
         isOwner={isOwner}
         onDeleteMember={(userId) => {
-          deleteMember.mutate({ boardId: id!, userId })
+          deleteMember.mutate({ boardId, userId })
         }}
       />
 
@@ -153,16 +163,16 @@ export function BoardPage() {
         setValue={setInputValue}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        isPending={createColumn.isPending}
+        isPending={isAddingColumn}
         title="New column"
         description="Create new column"
         label="New column"
         actionName="Create column"
         pendingName="Creating..."
-        handleSubmit={handleClick}
+        handleSubmit={handleCreateColumn}
       />
 
-      <TaskDrawer members={members ?? []} boardId={id!} isOwner={isOwner} />
+      <TaskDrawer members={members ?? []} boardId={boardId} isOwner={isOwner} />
     </div>
   )
 }
